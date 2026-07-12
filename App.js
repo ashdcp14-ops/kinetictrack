@@ -2,27 +2,28 @@ import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import WelcomeScreen from './components/WelcomeScreen';
-import OnboardingScreen from './components/OnboardingScreen';
+import RoutineScheduleScreen from './components/RoutineScheduleScreen';
 import ExerciseWorkspace from './components/ExerciseWorkspace';
+import { getTodayName } from './data/schedule';
 import { loadJSON, saveJSON, removeItem, STORAGE_KEYS } from './utils/storage';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userName, setUserName] = useState(null);
-  const [problemAreas, setProblemAreas] = useState(null);
+  const [weeklySchedule, setWeeklySchedule] = useState(null);
   const [struggleLogs, setStruggleLogs] = useState([]);
   const [postSetNotes, setPostSetNotes] = useState([]);
 
   useEffect(() => {
     async function loadPersistedState() {
-      const [savedName, savedAreas, savedStruggleLogs, savedPostSetNotes] = await Promise.all([
+      const [savedName, savedSchedule, savedStruggleLogs, savedPostSetNotes] = await Promise.all([
         loadJSON(STORAGE_KEYS.USER_NAME, null),
-        loadJSON(STORAGE_KEYS.PROBLEM_AREAS, null),
+        loadJSON(STORAGE_KEYS.WEEKLY_SCHEDULE, null),
         loadJSON(STORAGE_KEYS.STRUGGLE_LOGS, []),
         loadJSON(STORAGE_KEYS.POST_SET_NOTES, []),
       ]);
       setUserName(savedName);
-      setProblemAreas(savedAreas);
+      setWeeklySchedule(savedSchedule);
       setStruggleLogs(savedStruggleLogs);
       setPostSetNotes(savedPostSetNotes);
       setIsLoading(false);
@@ -51,22 +52,22 @@ export default function App() {
     saveJSON(STORAGE_KEYS.USER_NAME, name);
   }
 
-  function selectProblemAreas(areas) {
-    setProblemAreas(areas);
-    saveJSON(STORAGE_KEYS.PROBLEM_AREAS, areas);
+  function selectWeeklySchedule(schedule) {
+    setWeeklySchedule(schedule);
+    saveJSON(STORAGE_KEYS.WEEKLY_SCHEDULE, schedule);
   }
 
-  function resetProblemAreas() {
-    setProblemAreas(null);
-    removeItem(STORAGE_KEYS.PROBLEM_AREAS);
+  function resetWeeklySchedule() {
+    setWeeklySchedule(null);
+    removeItem(STORAGE_KEYS.WEEKLY_SCHEDULE);
   }
 
   if (!userName) {
     return <WelcomeScreen onContinue={selectUserName} />;
   }
 
-  if (!problemAreas) {
-    return <OnboardingScreen onContinue={selectProblemAreas} />;
+  if (!weeklySchedule) {
+    return <RoutineScheduleScreen onContinue={selectWeeklySchedule} />;
   }
 
   function logStruggle(exercise) {
@@ -83,16 +84,18 @@ export default function App() {
     ]);
   }
 
+  const todayCategory = weeklySchedule[getTodayName()] ?? null;
+
   return (
     <>
       <ExerciseWorkspace
         userName={userName}
-        problemAreas={problemAreas}
+        todayCategory={todayCategory}
         onLogStruggle={logStruggle}
         onLogFeedback={logFeedback}
         struggleLogs={struggleLogs}
         postSetNotes={postSetNotes}
-        onChangeAreas={resetProblemAreas}
+        onChangeSchedule={resetWeeklySchedule}
       />
       <StatusBar style="auto" />
     </>

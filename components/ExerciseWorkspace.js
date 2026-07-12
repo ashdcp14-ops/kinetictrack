@@ -9,14 +9,14 @@ import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 
 export default function ExerciseWorkspace({
   userName,
-  problemAreas,
+  todayCategory,
   onLogStruggle,
   onLogFeedback,
   struggleLogs,
   postSetNotes,
-  onChangeAreas,
+  onChangeSchedule,
 }) {
-  const exercises = getExercisesForAreas(problemAreas);
+  const exercises = todayCategory ? getExercisesForAreas([todayCategory]) : [];
   const [completedIds, setCompletedIds] = useState([]);
   const [hasLoadedCompletedIds, setHasLoadedCompletedIds] = useState(false);
   const [activeExercise, setActiveExercise] = useState(null);
@@ -62,9 +62,15 @@ export default function ExerciseWorkspace({
         </View>
       </View>
 
-      <TouchableOpacity onPress={onChangeAreas}>
-        <Text style={styles.changeAreasLink}>Change injury area</Text>
+      <TouchableOpacity onPress={onChangeSchedule}>
+        <Text style={styles.changeAreasLink}>Edit my routine</Text>
       </TouchableOpacity>
+
+      {todayCategory ? (
+        <Text style={styles.todayCategory}>{todayCategory}</Text>
+      ) : (
+        <Text style={styles.restDay}>No workout scheduled today — rest day 🌿</Text>
+      )}
 
       {exercises.map((exercise) => {
         const isCompleted = completedIds.includes(exercise.id);
@@ -152,6 +158,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     marginBottom: 20,
+  },
+  todayCategory: {
+    fontSize: 14,
+    color: '#2563eb',
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  restDay: {
+    fontSize: 15,
+    color: '#555',
+    fontStyle: 'italic',
   },
   row: {
     flexDirection: 'row',
