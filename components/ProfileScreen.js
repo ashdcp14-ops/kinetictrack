@@ -38,7 +38,7 @@ export default function ProfileScreen({
 
   const todayName = getTodayName();
   const todaySchedule = weeklySchedule[todayName] ?? null;
-  const todayStats = getDayCompletion(todaySchedule, completedByDay[todayName] ?? []);
+  const todayStats = getDayCompletion(todaySchedule, completedByDay[todayName] ?? {});
   const weekStats = getWeekCompletion(weeklySchedule, completedByDay);
 
   return (

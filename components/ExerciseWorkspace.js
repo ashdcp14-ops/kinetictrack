@@ -23,14 +23,17 @@ export default function ExerciseWorkspace({
 }) {
   const [selectedDay, setSelectedDayState] = useState(getTodayName());
   const daySchedule = weeklySchedule[selectedDay] ?? null;
+  const categoryExercises = daySchedule ? getExercisesForAreas([daySchedule.category]) : [];
   const exercises = daySchedule
-    ? getExercisesForAreas([daySchedule.category]).filter((exercise) =>
-        daySchedule.exerciseIds.includes(exercise.id)
-      )
+    ? daySchedule.exercises.map((config) => ({
+        ...categoryExercises.find((exercise) => exercise.id === config.id),
+        sets: config.sets,
+        reps: config.reps,
+      }))
     : [];
   const [completedByDay, setCompletedByDay] = useState({});
   const [hasLoadedCompletedIds, setHasLoadedCompletedIds] = useState(false);
-  const completedIdsForSelectedDay = completedByDay[selectedDay] ?? [];
+  const completedSetsForSelectedDay = completedByDay[selectedDay] ?? {};
   const [activeExercise, setActiveExercise] = useState(null);
   const [feedbackExercise, setFeedbackExercise] = useState(null);
   const [reminderSettingsVisible, setReminderSettingsVisible] = useState(false);
@@ -56,31 +59,46 @@ export default function ExerciseWorkspace({
     }
   }, [completedByDay, hasLoadedCompletedIds]);
 
-  function toggleCompleted(exercise) {
-    const isNowCompleted = !completedIdsForSelectedDay.includes(exercise.id);
-    const updatedList = isNowCompleted
-      ? [...completedIdsForSelectedDay, exercise.id]
-      : completedIdsForSelectedDay.filter((id) => id !== exercise.id);
-    setCompletedByDay((current) => ({ ...current, [selectedDay]: updatedList }));
-    if (isNowCompleted) {
+  function logSet(exercise) {
+    const doneSets = completedSetsForSelectedDay[exercise.id] ?? 0;
+    if (doneSets >= exercise.sets) {
+      return;
+    }
+    const newDoneSets = doneSets + 1;
+    setCompletedByDay((current) => ({
+      ...current,
+      [selectedDay]: { ...(current[selectedDay] ?? {}), [exercise.id]: newDoneSets },
+    }));
+    if (newDoneSets === exercise.sets) {
       setFeedbackExercise(exercise);
     }
   }
 
+  function undoSet(exercise) {
+    const doneSets = completedSetsForSelectedDay[exercise.id] ?? 0;
+    if (doneSets <= 0) {
+      return;
+    }
+    setCompletedByDay((current) => ({
+      ...current,
+      [selectedDay]: { ...(current[selectedDay] ?? {}), [exercise.id]: doneSets - 1 },
+    }));
+  }
+
   function checkDayCompletion() {
-    const currentList = completedByDay[selectedDay] ?? [];
+    const currentSets = completedByDay[selectedDay] ?? {};
     if (
       daySchedule &&
-      daySchedule.exerciseIds.length > 0 &&
-      daySchedule.exerciseIds.every((id) => currentList.includes(id))
+      daySchedule.exercises.length > 0 &&
+      daySchedule.exercises.every((exercise) => (currentSets[exercise.id] ?? 0) >= exercise.sets)
     ) {
       setDayCompleteModalVisible(true);
     }
   }
 
   const isToday = selectedDay === getTodayName();
-  const { percent, doneCount, total } = getDayCompletion(daySchedule, completedIdsForSelectedDay);
-  const dayExerciseIds = daySchedule?.exerciseIds ?? [];
+  const { percent, doneCount, total } = getDayCompletion(daySchedule, completedSetsForSelectedDay);
+  const dayExerciseIds = daySchedule?.exercises?.map((exercise) => exercise.id) ?? [];
   const dayStruggleEntries = struggleLogs.filter((entry) => dayExerciseIds.includes(entry.exerciseId));
   const dayNoteEntries = postSetNotes.filter((entry) => dayExerciseIds.includes(entry.exerciseId));
 
@@ -128,7 +146,7 @@ export default function ExerciseWorkspace({
               />
             </View>
             <Text style={styles.dayProgressLabel}>
-              {doneCount}/{total}
+              {doneCount}/{total} sets
             </Text>
           </View>
         </>
@@ -141,20 +159,49 @@ export default function ExerciseWorkspace({
       )}
 
       {exercises.map((exercise) => {
-        const isCompleted = completedIdsForSelectedDay.includes(exercise.id);
+        const doneSets = completedSetsForSelectedDay[exercise.id] ?? 0;
+        const isFullyDone = doneSets >= exercise.sets;
         return (
           <View key={exercise.id} style={styles.row}>
-            <TouchableOpacity style={styles.checkboxArea} onPress={() => toggleCompleted(exercise)}>
-              <Text style={styles.checkbox}>{isCompleted ? '☑' : '☐'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.nameArea} onPress={() => setActiveExercise(exercise)}>
-              <Text style={[styles.exerciseName, isCompleted && styles.exerciseNameDone]}>
-                {exercise.name}
+            <View style={styles.rowTop}>
+              <TouchableOpacity style={styles.nameArea} onPress={() => setActiveExercise(exercise)}>
+                <Text style={[styles.exerciseName, isFullyDone && styles.exerciseNameDone]}>
+                  {exercise.name}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.playButton} onPress={() => setActiveExercise(exercise)}>
+                <Text style={styles.playButtonText}>▶ Watch video</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.setsRow}>
+              <View style={styles.setsDots}>
+                {Array.from({ length: exercise.sets }).map((_, index) => (
+                  <Text key={index} style={styles.setDot}>
+                    {index < doneSets ? '●' : '○'}
+                  </Text>
+                ))}
+              </View>
+              <Text style={styles.setsLabel}>
+                {doneSets}/{exercise.sets} sets · {exercise.reps} reps
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.playButton} onPress={() => setActiveExercise(exercise)}>
-              <Text style={styles.playButtonText}>▶ Watch video</Text>
-            </TouchableOpacity>
+              <View style={styles.setsButtons}>
+                <TouchableOpacity
+                  style={[styles.logSetButton, isFullyDone && styles.setsButtonDisabled]}
+                  disabled={isFullyDone}
+                  onPress={() => logSet(exercise)}
+                >
+                  <Text style={styles.logSetButtonText}>+ Log Set</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.undoButton, doneSets === 0 && styles.setsButtonDisabled]}
+                  disabled={doneSets === 0}
+                  onPress={() => undoSet(exercise)}
+                >
+                  <Text style={styles.undoButtonText}>↺</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         );
       })}
@@ -305,9 +352,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#e5e5e5',
     borderRadius: 8,
@@ -315,11 +359,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     marginBottom: 12,
   },
-  checkboxArea: {
-    paddingRight: 10,
-  },
-  checkbox: {
-    fontSize: 18,
+  rowTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   nameArea: {
     flex: 1,
@@ -341,5 +385,56 @@ const styles = StyleSheet.create({
   playButtonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  setsRow: {
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+    paddingTop: 10,
+  },
+  setsDots: {
+    flexDirection: 'row',
+    marginBottom: 4,
+  },
+  setDot: {
+    fontSize: 16,
+    color: '#2563eb',
+    marginRight: 4,
+  },
+  setsLabel: {
+    fontSize: 13,
+    color: '#555',
+    marginBottom: 8,
+  },
+  setsButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logSetButton: {
+    backgroundColor: '#16a34a',
+    borderRadius: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    marginRight: 10,
+  },
+  logSetButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 13,
+  },
+  undoButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  undoButtonText: {
+    fontSize: 15,
+    color: '#555',
+  },
+  setsButtonDisabled: {
+    opacity: 0.4,
   },
 });
