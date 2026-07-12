@@ -13,6 +13,10 @@ export default function ReminderSettings({ visible, onClose }) {
   const [confirmedTime, setConfirmedTime] = useState(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
 
+  if (!visible) {
+    return null;
+  }
+
   async function handleSelectTime(option) {
     const granted = await requestNotificationPermissions();
     if (!granted) {
@@ -25,7 +29,7 @@ export default function ReminderSettings({ visible, onClose }) {
   }
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+    <Modal visible animationType="slide" onRequestClose={onClose}>
       <View style={styles.container}>
         <Text style={styles.title}>Daily reminder</Text>
         <Text style={styles.subtitle}>
