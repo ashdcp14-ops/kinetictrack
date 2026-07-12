@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-const PROBLEM_AREAS = ['Knee', 'Hip', 'Shoulder'];
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { PROBLEM_AREAS } from '../data/exercises';
 
 export default function OnboardingScreen({ onContinue }) {
   const [selectedAreas, setSelectedAreas] = useState([]);
@@ -15,7 +14,7 @@ export default function OnboardingScreen({ onContinue }) {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>What are you recovering from?</Text>
       <Text style={styles.subtitle}>
         Select your injury area to see relevant exercises.
@@ -43,7 +42,7 @@ export default function OnboardingScreen({ onContinue }) {
       >
         <Text style={styles.continueButtonText}>Continue</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -51,9 +50,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'stretch',
-    justifyContent: 'center',
+  },
+  content: {
     paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 24,
   },
   title: {
     fontSize: 24,
