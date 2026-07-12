@@ -1,23 +1,8 @@
 import { useState } from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getTodayName } from '../data/schedule';
-import { getExercisesForAreas } from '../data/exercises';
 import { getDayCompletion, getWeekCompletion, getProgressColor } from '../utils/progress';
-import MonthCalendar from './MonthCalendar';
-import DayDetailModal from './DayDetailModal';
 import WeeklyReportScreen from './WeeklyReportScreen';
-
-function getDayExercises(daySchedule) {
-  if (!daySchedule) {
-    return [];
-  }
-  const categoryExercises = getExercisesForAreas([daySchedule.category]);
-  return daySchedule.exercises.map((config) => ({
-    ...categoryExercises.find((exercise) => exercise.id === config.id),
-    sets: config.sets,
-    reps: config.reps,
-  }));
-}
 
 function ProgressCard({ label, stats }) {
   return (
@@ -49,9 +34,9 @@ export default function ProfileScreen({
   struggleLogs,
   postSetNotes,
   onViewClinicDashboard,
+  onViewCalendar,
 }) {
   const [weeklyReportVisible, setWeeklyReportVisible] = useState(false);
-  const [selectedCalendarDay, setSelectedCalendarDay] = useState(null);
 
   if (!visible) {
     return null;
@@ -61,7 +46,6 @@ export default function ProfileScreen({
   const todaySchedule = weeklySchedule[todayName] ?? null;
   const todayStats = getDayCompletion(todaySchedule, completedByDay[todayName] ?? {});
   const weekStats = getWeekCompletion(weeklySchedule, completedByDay);
-  const selectedDaySchedule = selectedCalendarDay ? weeklySchedule[selectedCalendarDay] ?? null : null;
 
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
@@ -75,9 +59,9 @@ export default function ProfileScreen({
         <ProgressCard label="Today's progress" stats={todayStats} />
         <ProgressCard label="This week's progress" stats={weekStats} />
 
-        <View style={styles.card}>
-          <MonthCalendar weeklySchedule={weeklySchedule} onSelectDay={setSelectedCalendarDay} />
-        </View>
+        <TouchableOpacity style={styles.calendarButton} onPress={onViewCalendar}>
+          <Text style={styles.calendarButtonText}>📅 View calendar</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.clinicButton} onPress={onViewClinicDashboard}>
           <Text style={styles.clinicButtonText}>📋 View my comments &amp; flags</Text>
@@ -94,14 +78,6 @@ export default function ProfileScreen({
         userName={userName}
         struggleLogs={struggleLogs}
         postSetNotes={postSetNotes}
-      />
-
-      <DayDetailModal
-        visible={Boolean(selectedCalendarDay)}
-        onClose={() => setSelectedCalendarDay(null)}
-        dayName={selectedCalendarDay}
-        daySchedule={selectedDaySchedule}
-        exercises={getDayExercises(selectedDaySchedule)}
       />
     </Modal>
   );
@@ -162,6 +138,20 @@ const styles = StyleSheet.create({
   progressLabel: {
     fontSize: 13,
     color: '#555',
+    fontWeight: '600',
+  },
+  calendarButton: {
+    marginTop: 8,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#2563eb',
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  calendarButtonText: {
+    color: '#2563eb',
+    fontSize: 15,
     fontWeight: '600',
   },
   clinicButton: {
