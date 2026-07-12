@@ -2,16 +2,22 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getExercisesForAreas } from '../data/exercises';
 import ExerciseGuideModal from './ExerciseGuideModal';
+import PostSetFeedbackModal from './PostSetFeedbackModal';
 
-export default function ExerciseWorkspace({ problemAreas, onLogStruggle }) {
+export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFeedback }) {
   const exercises = getExercisesForAreas(problemAreas);
   const [completedIds, setCompletedIds] = useState([]);
   const [activeExercise, setActiveExercise] = useState(null);
+  const [feedbackExercise, setFeedbackExercise] = useState(null);
 
-  function toggleCompleted(id) {
+  function toggleCompleted(exercise) {
+    const isNowCompleted = !completedIds.includes(exercise.id);
     setCompletedIds((current) =>
-      current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
+      isNowCompleted ? [...current, exercise.id] : current.filter((item) => item !== exercise.id)
     );
+    if (isNowCompleted) {
+      setFeedbackExercise(exercise);
+    }
   }
 
   return (
@@ -22,7 +28,7 @@ export default function ExerciseWorkspace({ problemAreas, onLogStruggle }) {
         const isCompleted = completedIds.includes(exercise.id);
         return (
           <View key={exercise.id} style={styles.row}>
-            <TouchableOpacity style={styles.checkArea} onPress={() => toggleCompleted(exercise.id)}>
+            <TouchableOpacity style={styles.checkArea} onPress={() => toggleCompleted(exercise)}>
               <Text style={styles.checkbox}>{isCompleted ? '☑' : '☐'}</Text>
               <Text style={[styles.exerciseName, isCompleted && styles.exerciseNameDone]}>
                 {exercise.name}
@@ -39,6 +45,15 @@ export default function ExerciseWorkspace({ problemAreas, onLogStruggle }) {
         exercise={activeExercise}
         onClose={() => setActiveExercise(null)}
         onLogStruggle={onLogStruggle}
+      />
+
+      <PostSetFeedbackModal
+        exercise={feedbackExercise}
+        onSubmit={(note) => {
+          onLogFeedback(feedbackExercise, note);
+          setFeedbackExercise(null);
+        }}
+        onSkip={() => setFeedbackExercise(null)}
       />
     </ScrollView>
   );
