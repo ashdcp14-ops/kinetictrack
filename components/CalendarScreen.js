@@ -3,6 +3,7 @@ import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } fr
 import { PROBLEM_AREA_ICONS, getExercisesForAreas } from '../data/exercises';
 import MonthCalendar from './MonthCalendar';
 import DayScheduleEditor from './DayScheduleEditor';
+import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 function getDayExercises(daySchedule) {
   if (!daySchedule) {
@@ -137,102 +138,104 @@ export default function CalendarScreen({ visible, onClose, weeklySchedule, onUpd
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   content: {
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
     paddingTop: 60,
-    paddingBottom: 40,
+    paddingBottom: SPACING.xxl,
   },
   backButton: {
     alignSelf: 'flex-start',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   backButtonText: {
-    color: '#2563eb',
-    fontSize: 16,
+    color: COLORS.primary,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: FONT_SIZES.xl,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 20,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.lg,
   },
   categoryRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   categoryIcon: {
     width: 28,
     height: 28,
-    marginRight: 8,
+    marginRight: SPACING.sm,
   },
   categoryText: {
-    fontSize: 15,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
-    color: '#2563eb',
+    color: COLORS.primary,
   },
   exerciseRow: {
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-    paddingVertical: 10,
+    borderTopColor: COLORS.border,
+    paddingVertical: SPACING.md,
   },
   exerciseName: {
-    fontSize: 15,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textPrimary,
     marginBottom: 2,
   },
   exerciseMeta: {
-    fontSize: 13,
-    color: '#777',
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textMuted,
   },
   restText: {
-    fontSize: 14,
-    color: '#555',
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
     fontStyle: 'italic',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   editButton: {
-    marginTop: 20,
+    marginTop: SPACING.xl,
     borderWidth: 1,
-    borderColor: '#2563eb',
-    borderRadius: 8,
-    paddingVertical: 14,
+    borderColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
     alignItems: 'center',
   },
   editButtonText: {
-    color: '#2563eb',
-    fontSize: 15,
+    color: COLORS.primary,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
   },
   saveButton: {
-    marginTop: 16,
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-    paddingVertical: 14,
+    marginTop: SPACING.lg,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
     alignItems: 'center',
   },
   saveButtonDisabled: {
-    backgroundColor: '#93c5fd',
+    backgroundColor: COLORS.primaryBorder,
   },
   saveButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
   removeButton: {
-    marginTop: 10,
+    marginTop: SPACING.md,
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: SPACING.md,
   },
   removeButtonText: {
-    color: '#dc2626',
-    fontSize: 14,
+    color: COLORS.danger,
+    fontSize: FONT_SIZES.sm,
     fontWeight: '600',
   },
 });

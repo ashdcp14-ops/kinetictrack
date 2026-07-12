@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -45,35 +46,36 @@ export default class ErrorBoundary extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
   },
   emoji: {
     fontSize: 40,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xl,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.sm,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#555',
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
     textAlign: 'center',
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
   },
   button: {
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
 });

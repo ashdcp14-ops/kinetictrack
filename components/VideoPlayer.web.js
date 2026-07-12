@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { getYouTubeEmbedUrl } from '../utils/youtube';
+import { RADIUS, SPACING } from '../utils/theme';
 
 export default function VideoPlayer({ videoUrl }) {
   const embedUrl = getYouTubeEmbedUrl(videoUrl);
@@ -13,10 +14,10 @@ export default function VideoPlayer({ videoUrl }) {
       style={{
         width: '100%',
         aspectRatio: 16 / 9,
-        borderRadius: 8,
+        borderRadius: RADIUS.md,
         overflow: 'hidden',
         backgroundColor: '#000',
-        marginBottom: 16,
+        marginBottom: SPACING.lg,
       }}
     >
       <iframe

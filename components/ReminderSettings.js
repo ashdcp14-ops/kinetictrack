@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { requestNotificationPermissions, scheduleDailyReminder } from '../utils/notifications';
+import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 const TIME_OPTIONS = [
   { label: '7:00 AM', hour: 7, minute: 0 },
@@ -73,57 +74,60 @@ export default function ReminderSettings({ visible, onClose }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 24,
+    backgroundColor: COLORS.background,
+    paddingHorizontal: SPACING.xl,
     paddingTop: 60,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xl,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.sm,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 24,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xl,
   },
   option: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 12,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   optionSelected: {
-    borderColor: '#2563eb',
-    backgroundColor: '#eff6ff',
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.primaryLight,
   },
   optionText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
+    color: COLORS.textPrimary,
   },
   optionTextSelected: {
-    color: '#2563eb',
+    color: COLORS.primaryDark,
     fontWeight: '600',
   },
   confirmation: {
-    marginTop: 8,
-    color: '#16a34a',
+    marginTop: SPACING.sm,
+    color: COLORS.accent,
     fontWeight: '600',
   },
   error: {
-    marginTop: 8,
-    color: '#dc2626',
+    marginTop: SPACING.sm,
+    color: COLORS.danger,
   },
   closeButton: {
     marginTop: 'auto',
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: SPACING.lg,
   },
   closeButtonText: {
-    color: '#2563eb',
-    fontSize: 16,
+    color: COLORS.primary,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
 });

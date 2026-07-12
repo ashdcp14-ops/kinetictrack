@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DAYS_OF_WEEK } from '../data/schedule';
 import DayScheduleEditor from './DayScheduleEditor';
+import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
 
 export default function RoutineScheduleScreen({ onContinue }) {
   const [step, setStep] = useState('days');
@@ -90,63 +91,71 @@ export default function RoutineScheduleScreen({ onContinue }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   content: {
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
     paddingTop: 60,
-    paddingBottom: 24,
+    paddingBottom: SPACING.xl,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xxl,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.sm,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 24,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xl,
+    lineHeight: 21,
   },
   daySection: {
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
   },
   dayTitle: {
-    fontSize: 17,
+    fontSize: FONT_SIZES.lg,
     fontWeight: '700',
-    marginBottom: 10,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.md,
   },
   option: {
+    backgroundColor: COLORS.surface,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 12,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   optionSelected: {
-    borderColor: '#2563eb',
-    backgroundColor: '#eff6ff',
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.primaryLight,
   },
   optionText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
+    color: COLORS.textPrimary,
   },
   optionTextSelected: {
-    color: '#2563eb',
+    color: COLORS.primaryDark,
     fontWeight: '600',
   },
   continueButton: {
-    marginTop: 12,
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-    paddingVertical: 14,
+    marginTop: SPACING.md,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
     alignItems: 'center',
+    ...SHADOW.card,
   },
   continueButtonDisabled: {
-    backgroundColor: '#93c5fd',
+    backgroundColor: COLORS.primaryBorder,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   continueButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
 });

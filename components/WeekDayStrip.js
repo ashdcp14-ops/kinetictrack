@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DAYS_OF_WEEK, DAY_ABBREVIATIONS, getTodayName } from '../data/schedule';
 import { getDayCompletion, getProgressColor } from '../utils/progress';
+import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule, completedByDay }) {
   const todayName = getTodayName();
@@ -49,38 +50,39 @@ export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule,
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   content: {
-    gap: 8,
-    paddingRight: 8,
+    gap: SPACING.sm,
+    paddingRight: SPACING.sm,
   },
   pill: {
     width: 56,
-    paddingVertical: 10,
-    borderRadius: 10,
+    paddingVertical: SPACING.md,
+    borderRadius: RADIUS.md,
     borderWidth: 1,
-    borderColor: '#e5e5e5',
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.surface,
     alignItems: 'center',
   },
   pillSelected: {
-    borderColor: '#2563eb',
-    backgroundColor: '#2563eb',
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.primary,
   },
   pillDay: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.sm,
     fontWeight: '700',
-    color: '#111',
+    color: COLORS.textPrimary,
   },
   pillDaySelected: {
-    color: '#fff',
+    color: COLORS.white,
   },
   progressTrack: {
-    marginTop: 8,
+    marginTop: SPACING.sm,
     width: 36,
     height: 5,
     borderRadius: 3,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: COLORS.surfaceMuted,
     overflow: 'hidden',
   },
   progressTrackSelected: {
@@ -91,20 +93,20 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   restLabel: {
-    marginTop: 6,
-    fontSize: 10,
-    color: '#999',
+    marginTop: SPACING.xs + 2,
+    fontSize: FONT_SIZES.xs - 2,
+    color: COLORS.textMuted,
   },
   restLabelSelected: {
-    color: '#dbeafe',
+    color: COLORS.primaryLight,
   },
   todayLabel: {
-    marginTop: 4,
-    fontSize: 9,
-    color: '#2563eb',
+    marginTop: SPACING.xs,
+    fontSize: FONT_SIZES.xs - 3,
+    color: COLORS.primary,
     fontWeight: '600',
   },
   todayLabelSelected: {
-    color: '#dbeafe',
+    color: COLORS.primaryLight,
   },
 });

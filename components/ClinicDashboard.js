@@ -1,4 +1,5 @@
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 function buildTimeline(struggleLogs, postSetNotes) {
   const struggleEntries = struggleLogs.map((log) => ({
@@ -70,69 +71,73 @@ export default function ClinicDashboard({ visible, onClose, struggleLogs, postSe
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   content: {
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
     paddingTop: 60,
-    paddingBottom: 24,
+    paddingBottom: SPACING.xl,
   },
   backButton: {
     alignSelf: 'flex-start',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   backButtonText: {
-    color: '#2563eb',
-    fontSize: 16,
+    color: COLORS.primary,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xl,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.sm,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 24,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xl,
   },
   emptyState: {
-    fontSize: 14,
-    color: '#999',
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textMuted,
     fontStyle: 'italic',
   },
   entry: {
-    borderRadius: 8,
+    borderRadius: RADIUS.md,
     borderLeftWidth: 4,
-    padding: 14,
-    marginBottom: 12,
-    backgroundColor: '#f9fafb',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    padding: SPACING.md,
+    marginBottom: SPACING.md,
+    backgroundColor: COLORS.surface,
   },
   entryStruggle: {
-    borderLeftColor: '#dc2626',
+    borderLeftColor: COLORS.danger,
   },
   entryNote: {
-    borderLeftColor: '#2563eb',
+    borderLeftColor: COLORS.primary,
   },
   entryHeader: {
-    fontSize: 12,
+    fontSize: FONT_SIZES.xs,
     fontWeight: '700',
-    color: '#555',
-    marginBottom: 4,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xs,
   },
   entryExercise: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
+    color: COLORS.textPrimary,
   },
   entryNoteText: {
-    fontSize: 14,
-    color: '#333',
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textPrimary,
     fontStyle: 'italic',
-    marginTop: 4,
+    marginTop: SPACING.xs,
   },
   entryTimestamp: {
-    fontSize: 12,
-    color: '#999',
-    marginTop: 6,
+    fontSize: FONT_SIZES.xs,
+    color: COLORS.textMuted,
+    marginTop: SPACING.sm,
   },
 });
