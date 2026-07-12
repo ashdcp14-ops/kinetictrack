@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getExercisesForAreas } from '../data/exercises';
 import ExerciseGuideModal from './ExerciseGuideModal';
 import PostSetFeedbackModal from './PostSetFeedbackModal';
 import ReminderSettings from './ReminderSettings';
 import ClinicDashboard from './ClinicDashboard';
+import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 
 export default function ExerciseWorkspace({
   problemAreas,
@@ -12,13 +13,28 @@ export default function ExerciseWorkspace({
   onLogFeedback,
   struggleLogs,
   postSetNotes,
+  onChangeAreas,
 }) {
   const exercises = getExercisesForAreas(problemAreas);
   const [completedIds, setCompletedIds] = useState([]);
+  const [hasLoadedCompletedIds, setHasLoadedCompletedIds] = useState(false);
   const [activeExercise, setActiveExercise] = useState(null);
   const [feedbackExercise, setFeedbackExercise] = useState(null);
   const [reminderSettingsVisible, setReminderSettingsVisible] = useState(false);
   const [clinicDashboardVisible, setClinicDashboardVisible] = useState(false);
+
+  useEffect(() => {
+    loadJSON(STORAGE_KEYS.COMPLETED_IDS, []).then((saved) => {
+      setCompletedIds(saved);
+      setHasLoadedCompletedIds(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (hasLoadedCompletedIds) {
+      saveJSON(STORAGE_KEYS.COMPLETED_IDS, completedIds);
+    }
+  }, [completedIds, hasLoadedCompletedIds]);
 
   function toggleCompleted(exercise) {
     const isNowCompleted = !completedIds.includes(exercise.id);
@@ -43,6 +59,10 @@ export default function ExerciseWorkspace({
           </TouchableOpacity>
         </View>
       </View>
+
+      <TouchableOpacity onPress={onChangeAreas}>
+        <Text style={styles.changeAreasLink}>Change injury area</Text>
+      </TouchableOpacity>
 
       {exercises.map((exercise) => {
         const isCompleted = completedIds.includes(exercise.id);
@@ -119,6 +139,12 @@ const styles = StyleSheet.create({
   },
   bellButtonText: {
     fontSize: 22,
+  },
+  changeAreasLink: {
+    color: '#2563eb',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 20,
   },
   row: {
     flexDirection: 'row',
