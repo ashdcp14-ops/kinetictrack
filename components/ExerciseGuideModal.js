@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle }) {
   const [justLogged, setJustLogged] = useState(false);
@@ -14,14 +14,19 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
     setTimeout(() => setJustLogged(false), 1500);
   }
 
+  function handleWatchVideo() {
+    Linking.openURL(exercise.videoUrl);
+  }
+
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
-      <View style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Text style={styles.title}>{exercise.name}</Text>
+        <Text style={styles.description}>{exercise.description}</Text>
 
-        <View style={styles.videoPlaceholder}>
-          <Text style={styles.videoPlaceholderText}>▶ Demo video</Text>
-        </View>
+        <TouchableOpacity style={styles.videoButton} onPress={handleWatchVideo}>
+          <Text style={styles.videoButtonText}>▶ Watch demo video</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity style={styles.struggleButton} onPress={handleStruggle}>
           <Text style={styles.struggleButtonText}>I'm Having Trouble with This</Text>
@@ -32,7 +37,7 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </Modal>
   );
 }
@@ -41,25 +46,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  content: {
     paddingHorizontal: 24,
     paddingTop: 60,
+    paddingBottom: 24,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 12,
   },
-  videoPlaceholder: {
-    height: 220,
-    backgroundColor: '#111',
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+  description: {
+    fontSize: 15,
+    color: '#333',
+    lineHeight: 22,
     marginBottom: 24,
   },
-  videoPlaceholderText: {
+  videoButton: {
+    backgroundColor: '#111',
+    borderRadius: 8,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  videoButtonText: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: '600',
   },
   struggleButton: {
     backgroundColor: '#dc2626',
@@ -80,8 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   closeButton: {
-    marginTop: 'auto',
-    marginBottom: 24,
+    marginTop: 24,
     alignItems: 'center',
     paddingVertical: 14,
   },
