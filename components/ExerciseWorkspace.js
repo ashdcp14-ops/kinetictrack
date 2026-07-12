@@ -129,8 +129,10 @@ export default function ExerciseWorkspace({
         const isCompleted = completedIds.includes(exercise.id);
         return (
           <View key={exercise.id} style={styles.row}>
-            <TouchableOpacity style={styles.checkArea} onPress={() => toggleCompleted(exercise)}>
+            <TouchableOpacity style={styles.checkboxArea} onPress={() => toggleCompleted(exercise)}>
               <Text style={styles.checkbox}>{isCompleted ? '☑' : '☐'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.nameArea} onPress={() => setActiveExercise(exercise)}>
               <Text style={[styles.exerciseName, isCompleted && styles.exerciseNameDone]}>
                 {exercise.name}
               </Text>
@@ -268,14 +270,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     marginBottom: 12,
   },
-  checkArea: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexShrink: 1,
+  checkboxArea: {
+    paddingRight: 10,
   },
   checkbox: {
     fontSize: 18,
-    marginRight: 10,
+  },
+  nameArea: {
+    flex: 1,
   },
   exerciseName: {
     fontSize: 16,
