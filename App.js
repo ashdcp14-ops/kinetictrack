@@ -1,23 +1,27 @@
 import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
+import WelcomeScreen from './components/WelcomeScreen';
 import OnboardingScreen from './components/OnboardingScreen';
 import ExerciseWorkspace from './components/ExerciseWorkspace';
 import { loadJSON, saveJSON, removeItem, STORAGE_KEYS } from './utils/storage';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [userName, setUserName] = useState(null);
   const [problemAreas, setProblemAreas] = useState(null);
   const [struggleLogs, setStruggleLogs] = useState([]);
   const [postSetNotes, setPostSetNotes] = useState([]);
 
   useEffect(() => {
     async function loadPersistedState() {
-      const [savedAreas, savedStruggleLogs, savedPostSetNotes] = await Promise.all([
+      const [savedName, savedAreas, savedStruggleLogs, savedPostSetNotes] = await Promise.all([
+        loadJSON(STORAGE_KEYS.USER_NAME, null),
         loadJSON(STORAGE_KEYS.PROBLEM_AREAS, null),
         loadJSON(STORAGE_KEYS.STRUGGLE_LOGS, []),
         loadJSON(STORAGE_KEYS.POST_SET_NOTES, []),
       ]);
+      setUserName(savedName);
       setProblemAreas(savedAreas);
       setStruggleLogs(savedStruggleLogs);
       setPostSetNotes(savedPostSetNotes);
@@ -42,6 +46,11 @@ export default function App() {
     return <View style={styles.container} />;
   }
 
+  function selectUserName(name) {
+    setUserName(name);
+    saveJSON(STORAGE_KEYS.USER_NAME, name);
+  }
+
   function selectProblemAreas(areas) {
     setProblemAreas(areas);
     saveJSON(STORAGE_KEYS.PROBLEM_AREAS, areas);
@@ -50,6 +59,10 @@ export default function App() {
   function resetProblemAreas() {
     setProblemAreas(null);
     removeItem(STORAGE_KEYS.PROBLEM_AREAS);
+  }
+
+  if (!userName) {
+    return <WelcomeScreen onContinue={selectUserName} />;
   }
 
   if (!problemAreas) {
@@ -73,6 +86,7 @@ export default function App() {
   return (
     <>
       <ExerciseWorkspace
+        userName={userName}
         problemAreas={problemAreas}
         onLogStruggle={logStruggle}
         onLogFeedback={logFeedback}
