@@ -4,13 +4,21 @@ import { getExercisesForAreas } from '../data/exercises';
 import ExerciseGuideModal from './ExerciseGuideModal';
 import PostSetFeedbackModal from './PostSetFeedbackModal';
 import ReminderSettings from './ReminderSettings';
+import ClinicDashboard from './ClinicDashboard';
 
-export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFeedback }) {
+export default function ExerciseWorkspace({
+  problemAreas,
+  onLogStruggle,
+  onLogFeedback,
+  struggleLogs,
+  postSetNotes,
+}) {
   const exercises = getExercisesForAreas(problemAreas);
   const [completedIds, setCompletedIds] = useState([]);
   const [activeExercise, setActiveExercise] = useState(null);
   const [feedbackExercise, setFeedbackExercise] = useState(null);
   const [reminderSettingsVisible, setReminderSettingsVisible] = useState(false);
+  const [clinicDashboardVisible, setClinicDashboardVisible] = useState(false);
 
   function toggleCompleted(exercise) {
     const isNowCompleted = !completedIds.includes(exercise.id);
@@ -26,9 +34,14 @@ export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFe
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
         <Text style={styles.title}>Today's Routine</Text>
-        <TouchableOpacity style={styles.bellButton} onPress={() => setReminderSettingsVisible(true)}>
-          <Text style={styles.bellButtonText}>🔔</Text>
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity style={styles.bellButton} onPress={() => setClinicDashboardVisible(true)}>
+            <Text style={styles.bellButtonText}>📋</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.bellButton} onPress={() => setReminderSettingsVisible(true)}>
+            <Text style={styles.bellButtonText}>🔔</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {exercises.map((exercise) => {
@@ -67,6 +80,13 @@ export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFe
         visible={reminderSettingsVisible}
         onClose={() => setReminderSettingsVisible(false)}
       />
+
+      <ClinicDashboard
+        visible={clinicDashboardVisible}
+        onClose={() => setClinicDashboardVisible(false)}
+        struggleLogs={struggleLogs}
+        postSetNotes={postSetNotes}
+      />
     </ScrollView>
   );
 }
@@ -90,6 +110,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  headerButtons: {
+    flexDirection: 'row',
   },
   bellButton: {
     padding: 8,
