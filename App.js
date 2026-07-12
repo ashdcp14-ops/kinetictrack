@@ -32,6 +32,8 @@ export default function App() {
         problemAreas={problemAreas}
         onLogStruggle={logStruggle}
         onLogFeedback={logFeedback}
+        struggleLogs={struggleLogs}
+        postSetNotes={postSetNotes}
       />
       <StatusBar style="auto" />
     </>
