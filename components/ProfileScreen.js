@@ -28,16 +28,17 @@ export default function ProfileScreen({
   onClose,
   userName,
   weeklySchedule,
-  completedIds,
+  completedByDay,
   onViewClinicDashboard,
 }) {
   if (!visible) {
     return null;
   }
 
-  const todaySchedule = weeklySchedule[getTodayName()] ?? null;
-  const todayStats = getDayCompletion(todaySchedule, completedIds);
-  const weekStats = getWeekCompletion(weeklySchedule, completedIds);
+  const todayName = getTodayName();
+  const todaySchedule = weeklySchedule[todayName] ?? null;
+  const todayStats = getDayCompletion(todaySchedule, completedByDay[todayName] ?? []);
+  const weekStats = getWeekCompletion(weeklySchedule, completedByDay);
 
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
