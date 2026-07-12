@@ -3,12 +3,13 @@ import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { getTodayName } from '../data/schedule';
 import { getDayCompletion, getWeekCompletion, getProgressColor } from '../utils/progress';
 import WeeklyReportScreen from './WeeklyReportScreen';
-import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
+import BottomNavBar from './BottomNavBar';
+import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW, CATEGORY_PALETTE } from '../utils/theme';
 
-function ProgressCard({ label, stats }) {
+function ProgressCard({ label, stats, accent }) {
   return (
-    <View style={styles.card}>
-      <Text style={styles.cardLabel}>{label}</Text>
+    <View style={[styles.card, { backgroundColor: accent.bg }]}>
+      <Text style={[styles.cardLabel, { color: accent.text }]}>{label}</Text>
       <View style={styles.progressRow}>
         <View style={styles.progressTrack}>
           <View
@@ -18,7 +19,7 @@ function ProgressCard({ label, stats }) {
             ]}
           />
         </View>
-        <Text style={styles.progressLabel}>
+        <Text style={[styles.progressLabel, { color: accent.text }]}>
           {stats.doneCount}/{stats.total}
         </Text>
       </View>
@@ -36,7 +37,10 @@ export default function ProfileScreen({
   postSetNotes,
   onViewClinicDashboard,
   onViewCalendar,
+  onViewReminders,
   onSwitchUser,
+  activeTab,
+  onNavigate,
 }) {
   const [weeklyReportVisible, setWeeklyReportVisible] = useState(false);
   const [confirmingSwitch, setConfirmingSwitch] = useState(false);
@@ -52,6 +56,7 @@ export default function ProfileScreen({
 
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
+    <View style={styles.screen}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity style={styles.backButton} onPress={onClose}>
           <Text style={styles.backButtonText}>← Back</Text>
@@ -59,8 +64,8 @@ export default function ProfileScreen({
 
         <Text style={styles.greeting}>Hi, {userName} 👋</Text>
 
-        <ProgressCard label="Today's progress" stats={todayStats} />
-        <ProgressCard label="This week's progress" stats={weekStats} />
+        <ProgressCard label="Today's progress" stats={todayStats} accent={CATEGORY_PALETTE[0]} />
+        <ProgressCard label="This week's progress" stats={weekStats} accent={CATEGORY_PALETTE[2]} />
 
         <TouchableOpacity style={styles.calendarButton} onPress={onViewCalendar}>
           <Text style={styles.calendarButtonText}>📅 View calendar</Text>
@@ -72,6 +77,10 @@ export default function ProfileScreen({
 
         <TouchableOpacity style={styles.reportButton} onPress={() => setWeeklyReportVisible(true)}>
           <Text style={styles.reportButtonText}>📄 Weekly report for my PT</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.reportButton} onPress={onViewReminders}>
+          <Text style={styles.reportButtonText}>🔔 Reminder settings</Text>
         </TouchableOpacity>
 
         {confirmingSwitch ? (
@@ -104,11 +113,17 @@ export default function ProfileScreen({
         struggleLogs={struggleLogs}
         postSetNotes={postSetNotes}
       />
+      <BottomNavBar activeTab={activeTab} onNavigate={onNavigate} />
+    </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -116,7 +131,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: SPACING.xl,
     paddingTop: 60,
-    paddingBottom: SPACING.xl,
+    paddingBottom: 100,
   },
   backButton: {
     alignSelf: 'flex-start',

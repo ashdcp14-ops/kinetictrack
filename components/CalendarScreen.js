@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { PROBLEM_AREA_ICONS, getExercisesForAreas } from '../data/exercises';
+import { PROBLEM_AREAS, PROBLEM_AREA_ICONS, getExercisesForAreas } from '../data/exercises';
 import MonthCalendar from './MonthCalendar';
 import DayScheduleEditor from './DayScheduleEditor';
-import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
+import BottomNavBar from './BottomNavBar';
+import { COLORS, RADIUS, SPACING, FONT_SIZES, getCategoryAccent } from '../utils/theme';
 
 function getDayExercises(daySchedule) {
   if (!daySchedule) {
@@ -17,7 +18,14 @@ function getDayExercises(daySchedule) {
   }));
 }
 
-export default function CalendarScreen({ visible, onClose, weeklySchedule, onUpdateDaySchedule }) {
+export default function CalendarScreen({
+  visible,
+  onClose,
+  weeklySchedule,
+  onUpdateDaySchedule,
+  activeTab,
+  onNavigate,
+}) {
   const [selectedDay, setSelectedDay] = useState(null);
   const [step, setStep] = useState('calendar');
   const [draftSchedule, setDraftSchedule] = useState(null);
@@ -56,9 +64,13 @@ export default function CalendarScreen({ visible, onClose, weeklySchedule, onUpd
   }
 
   const daySchedule = selectedDay ? weeklySchedule[selectedDay] ?? null : null;
+  const categoryAccent = daySchedule
+    ? getCategoryAccent(PROBLEM_AREAS.indexOf(daySchedule.category))
+    : null;
 
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
+    <View style={styles.screen}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity
           style={styles.backButton}
@@ -81,13 +93,15 @@ export default function CalendarScreen({ visible, onClose, weeklySchedule, onUpd
 
             {daySchedule ? (
               <>
-                <View style={styles.categoryRow}>
+                <View style={[styles.categoryRow, { backgroundColor: categoryAccent.bg }]}>
                   <Image
                     source={PROBLEM_AREA_ICONS[daySchedule.category]}
                     style={styles.categoryIcon}
                     resizeMode="contain"
                   />
-                  <Text style={styles.categoryText}>{daySchedule.category}</Text>
+                  <Text style={[styles.categoryText, { color: categoryAccent.text }]}>
+                    {daySchedule.category}
+                  </Text>
                 </View>
 
                 {getDayExercises(daySchedule).map((exercise) => (
@@ -131,11 +145,17 @@ export default function CalendarScreen({ visible, onClose, weeklySchedule, onUpd
           </>
         )}
       </ScrollView>
+      <BottomNavBar activeTab={activeTab} onNavigate={onNavigate} />
+    </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -143,7 +163,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: SPACING.xl,
     paddingTop: 60,
-    paddingBottom: SPACING.xxl,
+    paddingBottom: 100,
   },
   backButton: {
     alignSelf: 'flex-start',
@@ -168,6 +188,9 @@ const styles = StyleSheet.create({
   categoryRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderRadius: RADIUS.lg,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.lg,
     marginBottom: SPACING.lg,
   },
   categoryIcon: {
