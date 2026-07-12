@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { PROBLEM_AREA_ICONS } from '../data/exercises';
 
 const MONTH_NAMES = [
   'January',
@@ -27,7 +28,7 @@ const WEEKDAY_NAMES = [
   'Saturday',
 ];
 
-export default function MonthCalendar({ weeklySchedule }) {
+export default function MonthCalendar({ weeklySchedule, onSelectDay }) {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
@@ -64,16 +65,28 @@ export default function MonthCalendar({ weeklySchedule }) {
             return <View key={`empty-${index}`} style={styles.cell} />;
           }
           const weekdayName = WEEKDAY_NAMES[new Date(year, month, day).getDay()];
-          const hasRoutine = Boolean(weeklySchedule[weekdayName]);
+          const daySchedule = weeklySchedule[weekdayName];
           const isToday = day === todayDate;
 
           return (
-            <View key={day} style={styles.cell}>
+            <TouchableOpacity
+              key={day}
+              style={styles.cell}
+              onPress={() => onSelectDay(weekdayName)}
+            >
               <View style={[styles.dateCircle, isToday && styles.dateCircleToday]}>
                 <Text style={[styles.dateText, isToday && styles.dateTextToday]}>{day}</Text>
               </View>
-              {hasRoutine && <View style={[styles.routineDot, isToday && styles.routineDotToday]} />}
-            </View>
+              {daySchedule ? (
+                <Image
+                  source={PROBLEM_AREA_ICONS[daySchedule.category]}
+                  style={styles.routineIcon}
+                  resizeMode="contain"
+                />
+              ) : (
+                <View style={styles.routineIconPlaceholder} />
+              )}
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -131,14 +144,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '700',
   },
-  routineDot: {
+  routineIcon: {
     marginTop: 2,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: '#2563eb',
+    width: 16,
+    height: 16,
   },
-  routineDotToday: {
-    backgroundColor: '#93c5fd',
+  routineIconPlaceholder: {
+    marginTop: 2,
+    width: 16,
+    height: 16,
   },
 });
