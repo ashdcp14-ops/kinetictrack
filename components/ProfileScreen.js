@@ -1,9 +1,23 @@
 import { useState } from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getTodayName } from '../data/schedule';
+import { getExercisesForAreas } from '../data/exercises';
 import { getDayCompletion, getWeekCompletion, getProgressColor } from '../utils/progress';
 import MonthCalendar from './MonthCalendar';
+import DayDetailModal from './DayDetailModal';
 import WeeklyReportScreen from './WeeklyReportScreen';
+
+function getDayExercises(daySchedule) {
+  if (!daySchedule) {
+    return [];
+  }
+  const categoryExercises = getExercisesForAreas([daySchedule.category]);
+  return daySchedule.exercises.map((config) => ({
+    ...categoryExercises.find((exercise) => exercise.id === config.id),
+    sets: config.sets,
+    reps: config.reps,
+  }));
+}
 
 function ProgressCard({ label, stats }) {
   return (
@@ -37,6 +51,7 @@ export default function ProfileScreen({
   onViewClinicDashboard,
 }) {
   const [weeklyReportVisible, setWeeklyReportVisible] = useState(false);
+  const [selectedCalendarDay, setSelectedCalendarDay] = useState(null);
 
   if (!visible) {
     return null;
@@ -46,6 +61,7 @@ export default function ProfileScreen({
   const todaySchedule = weeklySchedule[todayName] ?? null;
   const todayStats = getDayCompletion(todaySchedule, completedByDay[todayName] ?? {});
   const weekStats = getWeekCompletion(weeklySchedule, completedByDay);
+  const selectedDaySchedule = selectedCalendarDay ? weeklySchedule[selectedCalendarDay] ?? null : null;
 
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
@@ -60,7 +76,7 @@ export default function ProfileScreen({
         <ProgressCard label="This week's progress" stats={weekStats} />
 
         <View style={styles.card}>
-          <MonthCalendar weeklySchedule={weeklySchedule} />
+          <MonthCalendar weeklySchedule={weeklySchedule} onSelectDay={setSelectedCalendarDay} />
         </View>
 
         <TouchableOpacity style={styles.clinicButton} onPress={onViewClinicDashboard}>
@@ -78,6 +94,14 @@ export default function ProfileScreen({
         userName={userName}
         struggleLogs={struggleLogs}
         postSetNotes={postSetNotes}
+      />
+
+      <DayDetailModal
+        visible={Boolean(selectedCalendarDay)}
+        onClose={() => setSelectedCalendarDay(null)}
+        dayName={selectedCalendarDay}
+        daySchedule={selectedDaySchedule}
+        exercises={getDayExercises(selectedDaySchedule)}
       />
     </Modal>
   );
