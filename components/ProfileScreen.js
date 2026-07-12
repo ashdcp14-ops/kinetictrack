@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getTodayName } from '../data/schedule';
 import { getDayCompletion, getWeekCompletion, getProgressColor } from '../utils/progress';
 import MonthCalendar from './MonthCalendar';
+import WeeklyReportScreen from './WeeklyReportScreen';
 
 function ProgressCard({ label, stats }) {
   return (
@@ -30,8 +32,12 @@ export default function ProfileScreen({
   userName,
   weeklySchedule,
   completedByDay,
+  struggleLogs,
+  postSetNotes,
   onViewClinicDashboard,
 }) {
+  const [weeklyReportVisible, setWeeklyReportVisible] = useState(false);
+
   if (!visible) {
     return null;
   }
@@ -60,7 +66,19 @@ export default function ProfileScreen({
         <TouchableOpacity style={styles.clinicButton} onPress={onViewClinicDashboard}>
           <Text style={styles.clinicButtonText}>📋 View my comments &amp; flags</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.reportButton} onPress={() => setWeeklyReportVisible(true)}>
+          <Text style={styles.reportButtonText}>📄 Weekly report for my PT</Text>
+        </TouchableOpacity>
       </ScrollView>
+
+      <WeeklyReportScreen
+        visible={weeklyReportVisible}
+        onClose={() => setWeeklyReportVisible(false)}
+        userName={userName}
+        struggleLogs={struggleLogs}
+        postSetNotes={postSetNotes}
+      />
     </Modal>
   );
 }
@@ -131,6 +149,19 @@ const styles = StyleSheet.create({
   },
   clinicButtonText: {
     color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  reportButton: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#2563eb',
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  reportButtonText: {
+    color: '#2563eb',
     fontSize: 15,
     fontWeight: '600',
   },

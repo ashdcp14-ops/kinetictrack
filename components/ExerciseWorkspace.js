@@ -251,6 +251,8 @@ export default function ExerciseWorkspace({
         userName={userName}
         weeklySchedule={weeklySchedule}
         completedByDay={completedByDay}
+        struggleLogs={struggleLogs}
+        postSetNotes={postSetNotes}
         onViewClinicDashboard={() => {
           setProfileVisible(false);
           setClinicDashboardVisible(true);
