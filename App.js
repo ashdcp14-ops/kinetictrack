@@ -4,9 +4,31 @@ import { StyleSheet, View } from 'react-native';
 import WelcomeScreen from './components/WelcomeScreen';
 import RoutineScheduleScreen from './components/RoutineScheduleScreen';
 import ExerciseWorkspace from './components/ExerciseWorkspace';
+import ErrorBoundary from './components/ErrorBoundary';
 import { loadJSON, saveJSON, removeItem, STORAGE_KEYS } from './utils/storage';
 
-export default function App() {
+function migrateWeeklySchedule(schedule) {
+  if (!schedule) {
+    return { schedule, didMigrate: false };
+  }
+  let didMigrate = false;
+  const migrated = {};
+  for (const day of Object.keys(schedule)) {
+    const entry = schedule[day];
+    if (!entry.exercises && entry.exerciseIds) {
+      didMigrate = true;
+      migrated[day] = {
+        category: entry.category,
+        exercises: entry.exerciseIds.map((id) => ({ id, sets: 3, reps: 10 })),
+      };
+    } else {
+      migrated[day] = entry;
+    }
+  }
+  return { schedule: migrated, didMigrate };
+}
+
+function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [userName, setUserName] = useState(null);
   const [weeklySchedule, setWeeklySchedule] = useState(null);
@@ -21,8 +43,12 @@ export default function App() {
         loadJSON(STORAGE_KEYS.STRUGGLE_LOGS, []),
         loadJSON(STORAGE_KEYS.POST_SET_NOTES, []),
       ]);
+      const { schedule: migratedSchedule, didMigrate } = migrateWeeklySchedule(savedSchedule);
+      if (didMigrate) {
+        saveJSON(STORAGE_KEYS.WEEKLY_SCHEDULE, migratedSchedule);
+      }
       setUserName(savedName);
-      setWeeklySchedule(savedSchedule);
+      setWeeklySchedule(migratedSchedule);
       setStruggleLogs(savedStruggleLogs);
       setPostSetNotes(savedPostSetNotes);
       setIsLoading(false);
@@ -102,6 +128,14 @@ export default function App() {
       />
       <StatusBar style="auto" />
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 
