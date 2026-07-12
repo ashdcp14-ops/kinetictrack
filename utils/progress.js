@@ -7,6 +7,19 @@ export function getDayCompletion(daySchedule, completedIds) {
   return { percent: doneCount / total, doneCount, total };
 }
 
+export function getWeekCompletion(weeklySchedule, completedIds) {
+  const scheduledDays = Object.values(weeklySchedule);
+  const total = scheduledDays.reduce((sum, day) => sum + day.exerciseIds.length, 0);
+  if (total === 0) {
+    return { percent: 0, doneCount: 0, total: 0 };
+  }
+  const doneCount = scheduledDays.reduce(
+    (sum, day) => sum + day.exerciseIds.filter((id) => completedIds.includes(id)).length,
+    0
+  );
+  return { percent: doneCount / total, doneCount, total };
+}
+
 export function getProgressColor(percent) {
   if (percent >= 1) {
     return '#16a34a';
