@@ -16,7 +16,7 @@ export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule,
         const isSelected = day === selectedDay;
         const isToday = day === todayName;
         const daySchedule = weeklySchedule[day];
-        const { percent } = getDayCompletion(daySchedule, completedByDay[day] ?? []);
+        const { percent } = getDayCompletion(daySchedule, completedByDay[day] ?? {});
 
         return (
           <TouchableOpacity

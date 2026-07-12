@@ -23,6 +23,9 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
         </TouchableOpacity>
 
         <Text style={styles.title}>{exercise.name}</Text>
+        <Text style={styles.target}>
+          Target: {exercise.sets} sets × {exercise.reps} reps
+        </Text>
 
         <VideoPlayer videoUrl={exercise.videoUrl} />
 
@@ -64,7 +67,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 12,
+    marginBottom: 4,
+  },
+  target: {
+    fontSize: 13,
+    color: '#2563eb',
+    fontWeight: '600',
+    marginBottom: 16,
   },
   openInYoutube: {
     color: '#2563eb',
