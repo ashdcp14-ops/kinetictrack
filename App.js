@@ -84,13 +84,13 @@ export default function App() {
     ]);
   }
 
-  const todayCategory = weeklySchedule[getTodayName()] ?? null;
+  const todaySchedule = weeklySchedule[getTodayName()] ?? null;
 
   return (
     <>
       <ExerciseWorkspace
         userName={userName}
-        todayCategory={todayCategory}
+        todaySchedule={todaySchedule}
         onLogStruggle={logStruggle}
         onLogFeedback={logFeedback}
         struggleLogs={struggleLogs}

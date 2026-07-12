@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DAYS_OF_WEEK } from '../data/schedule';
-import { PROBLEM_AREAS } from '../data/exercises';
+import { PROBLEM_AREAS, getExercisesForAreas } from '../data/exercises';
 
 export default function RoutineScheduleScreen({ onContinue }) {
   const [step, setStep] = useState('days');
@@ -15,11 +15,26 @@ export default function RoutineScheduleScreen({ onContinue }) {
   }
 
   function assignCategory(day, category) {
-    setSchedule((current) => ({ ...current, [day]: category }));
+    setSchedule((current) => ({
+      ...current,
+      [day]: { category, exerciseIds: [] },
+    }));
+  }
+
+  function toggleExercise(day, exerciseId) {
+    setSchedule((current) => {
+      const dayEntry = current[day];
+      const exerciseIds = dayEntry.exerciseIds.includes(exerciseId)
+        ? dayEntry.exerciseIds.filter((id) => id !== exerciseId)
+        : [...dayEntry.exerciseIds, exerciseId];
+      return { ...current, [day]: { ...dayEntry, exerciseIds } };
+    });
   }
 
   const orderedSelectedDays = DAYS_OF_WEEK.filter((day) => selectedDays.includes(day));
-  const allDaysAssigned = orderedSelectedDays.every((day) => schedule[day]);
+  const allDaysReady = orderedSelectedDays.every(
+    (day) => schedule[day]?.category && schedule[day].exerciseIds.length > 0
+  );
 
   function handleFinish() {
     const finalSchedule = {};
@@ -63,32 +78,60 @@ export default function RoutineScheduleScreen({ onContinue }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Choose a focus for each day</Text>
-      <Text style={styles.subtitle}>Assign a category to every training day.</Text>
+      <Text style={styles.title}>Build each day's workout</Text>
+      <Text style={styles.subtitle}>
+        Pick a category, then check off the exercises you'll actually do — no need to do all of them.
+      </Text>
 
-      {orderedSelectedDays.map((day) => (
-        <View key={day} style={styles.daySection}>
-          <Text style={styles.dayTitle}>{day}</Text>
-          {PROBLEM_AREAS.map((category) => {
-            const isSelected = schedule[day] === category;
-            return (
-              <TouchableOpacity
-                key={category}
-                style={[styles.option, isSelected && styles.optionSelected]}
-                onPress={() => assignCategory(day, category)}
-              >
-                <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
-                  {isSelected ? '●' : '○'} {category}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      ))}
+      {orderedSelectedDays.map((day) => {
+        const dayEntry = schedule[day];
+        const dayExercises = dayEntry ? getExercisesForAreas([dayEntry.category]) : [];
+
+        return (
+          <View key={day} style={styles.daySection}>
+            <Text style={styles.dayTitle}>{day}</Text>
+
+            {PROBLEM_AREAS.map((category) => {
+              const isSelected = dayEntry?.category === category;
+              return (
+                <TouchableOpacity
+                  key={category}
+                  style={[styles.option, isSelected && styles.optionSelected]}
+                  onPress={() => assignCategory(day, category)}
+                >
+                  <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
+                    {isSelected ? '●' : '○'} {category}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+
+            {dayEntry && (
+              <View style={styles.exerciseChecklist}>
+                <Text style={styles.exerciseChecklistLabel}>Which exercises?</Text>
+                {dayExercises.map((exercise) => {
+                  const isChecked = dayEntry.exerciseIds.includes(exercise.id);
+                  return (
+                    <TouchableOpacity
+                      key={exercise.id}
+                      style={styles.exerciseOption}
+                      onPress={() => toggleExercise(day, exercise.id)}
+                    >
+                      <Text style={styles.exerciseOptionText}>
+                        {isChecked ? '☑' : '☐'} {exercise.name}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )}
+          </View>
+        );
+      })}
 
       <TouchableOpacity
-        style={[styles.continueButton, !allDaysAssigned && styles.continueButtonDisabled]}
-        disabled={!allDaysAssigned}
+        style={[styles.continueButton, !allDaysReady && styles.continueButtonDisabled]}
+        disabled={!allDaysReady}
         onPress={handleFinish}
       >
         <Text style={styles.continueButtonText}>Save Routine</Text>
@@ -118,7 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   daySection: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   dayTitle: {
     fontSize: 17,
@@ -143,6 +186,24 @@ const styles = StyleSheet.create({
   optionTextSelected: {
     color: '#2563eb',
     fontWeight: '600',
+  },
+  exerciseChecklist: {
+    backgroundColor: '#f9fafb',
+    borderRadius: 8,
+    padding: 14,
+    marginTop: 4,
+  },
+  exerciseChecklistLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#555',
+    marginBottom: 10,
+  },
+  exerciseOption: {
+    paddingVertical: 8,
+  },
+  exerciseOptionText: {
+    fontSize: 15,
   },
   continueButton: {
     marginTop: 12,
