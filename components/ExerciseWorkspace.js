@@ -9,14 +9,18 @@ import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 
 export default function ExerciseWorkspace({
   userName,
-  todayCategory,
+  todaySchedule,
   onLogStruggle,
   onLogFeedback,
   struggleLogs,
   postSetNotes,
   onChangeSchedule,
 }) {
-  const exercises = todayCategory ? getExercisesForAreas([todayCategory]) : [];
+  const exercises = todaySchedule
+    ? getExercisesForAreas([todaySchedule.category]).filter((exercise) =>
+        todaySchedule.exerciseIds.includes(exercise.id)
+      )
+    : [];
   const [completedIds, setCompletedIds] = useState([]);
   const [hasLoadedCompletedIds, setHasLoadedCompletedIds] = useState(false);
   const [activeExercise, setActiveExercise] = useState(null);
@@ -66,8 +70,8 @@ export default function ExerciseWorkspace({
         <Text style={styles.changeAreasLink}>Edit my routine</Text>
       </TouchableOpacity>
 
-      {todayCategory ? (
-        <Text style={styles.todayCategory}>{todayCategory}</Text>
+      {todaySchedule ? (
+        <Text style={styles.todayCategory}>{todaySchedule.category}</Text>
       ) : (
         <Text style={styles.restDay}>No workout scheduled today — rest day 🌿</Text>
       )}
