@@ -1,4 +1,5 @@
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import BottomNavBar from './BottomNavBar';
 import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 function buildTimeline(struggleLogs, postSetNotes) {
@@ -27,7 +28,14 @@ function formatTimestamp(timestamp) {
   return `${weekday}, ${dateLabel} · ${timeLabel}`;
 }
 
-export default function ClinicDashboard({ visible, onClose, struggleLogs, postSetNotes }) {
+export default function ClinicDashboard({
+  visible,
+  onClose,
+  struggleLogs,
+  postSetNotes,
+  activeTab,
+  onNavigate,
+}) {
   if (!visible) {
     return null;
   }
@@ -36,6 +44,7 @@ export default function ClinicDashboard({ visible, onClose, struggleLogs, postSe
 
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
+    <View style={styles.screen}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity style={styles.backButton} onPress={onClose}>
           <Text style={styles.backButtonText}>← Back</Text>
@@ -64,11 +73,17 @@ export default function ClinicDashboard({ visible, onClose, struggleLogs, postSe
           </View>
         ))}
       </ScrollView>
+      <BottomNavBar activeTab={activeTab} onNavigate={onNavigate} />
+    </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -76,7 +91,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: SPACING.xl,
     paddingTop: 60,
-    paddingBottom: SPACING.xl,
+    paddingBottom: 100,
   },
   backButton: {
     alignSelf: 'flex-start',

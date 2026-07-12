@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PROBLEM_AREAS, PROBLEM_AREA_ICONS, getExercisesForAreas } from '../data/exercises';
-import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
+import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW, getCategoryAccent } from '../utils/theme';
 
 const DEFAULT_SETS = 3;
 const DEFAULT_REPS = 10;
@@ -55,25 +55,33 @@ export default function DayScheduleEditor({ daySchedule, onChange }) {
 
   return (
     <View>
-      {PROBLEM_AREAS.map((areaCategory) => {
+      {PROBLEM_AREAS.map((areaCategory, index) => {
         const isSelected = category === areaCategory;
+        const accent = getCategoryAccent(index);
         return (
           <TouchableOpacity
             key={areaCategory}
-            style={[styles.option, styles.categoryOption, isSelected && styles.optionSelected]}
+            style={[
+              styles.option,
+              styles.categoryOption,
+              { backgroundColor: accent.bg },
+              isSelected && { borderColor: accent.text, ...SHADOW.card },
+            ]}
             onPress={() => assignCategory(areaCategory)}
           >
-            <View style={[styles.categoryIconCircle, isSelected && styles.categoryIconCircleSelected]}>
+            <View style={styles.categoryIconCircle}>
               <Image
                 source={PROBLEM_AREA_ICONS[areaCategory]}
                 style={styles.categoryIcon}
                 resizeMode="contain"
               />
             </View>
-            <Text style={[styles.optionText, styles.categoryOptionText, isSelected && styles.optionTextSelected]}>
+            <Text style={[styles.optionText, styles.categoryOptionText, { color: accent.text }]}>
               {areaCategory}
             </Text>
-            <Text style={styles.categoryRadio}>{isSelected ? '●' : '○'}</Text>
+            <Text style={[styles.categoryRadio, { color: accent.text }]}>
+              {isSelected ? '●' : '○'}
+            </Text>
           </TouchableOpacity>
         );
       })}
@@ -119,25 +127,16 @@ export default function DayScheduleEditor({ daySchedule, onChange }) {
 
 const styles = StyleSheet.create({
   option: {
-    backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: RADIUS.md,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderRadius: RADIUS.lg,
     paddingVertical: SPACING.lg,
     paddingHorizontal: SPACING.lg,
     marginBottom: SPACING.md,
   },
-  optionSelected: {
-    borderColor: COLORS.primary,
-    backgroundColor: COLORS.primaryLight,
-  },
   optionText: {
     fontSize: FONT_SIZES.md,
     color: COLORS.textPrimary,
-  },
-  optionTextSelected: {
-    color: COLORS.primaryDark,
-    fontWeight: '600',
   },
   categoryOption: {
     flexDirection: 'row',
@@ -147,14 +146,11 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: RADIUS.full,
-    backgroundColor: COLORS.surfaceMuted,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: SPACING.md,
     overflow: 'hidden',
-  },
-  categoryIconCircleSelected: {
-    backgroundColor: COLORS.primaryLight,
   },
   categoryIcon: {
     width: 30,

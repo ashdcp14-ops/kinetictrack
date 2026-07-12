@@ -74,3 +74,17 @@ export function getProgressColor(percent) {
   }
   return COLORS.danger;
 }
+
+export const CATEGORY_PALETTE = [
+  { bg: '#FDECC8', text: '#8A5A15', icon: '#F5C563' },
+  { bg: '#E4DEFB', text: '#4B3F91', icon: '#B7A9F7' },
+  { bg: '#D9F2E6', text: '#1F7A54', icon: '#8FDBBB' },
+  { bg: '#FDE1E1', text: '#9C3B3B', icon: '#F5A6A6' },
+  { bg: '#DCEEFB', text: '#2A5F82', icon: '#96C9EF' },
+  { bg: '#F3E0F5', text: '#7A3D82', icon: '#E0AEE6' },
+];
+
+export function getCategoryAccent(index) {
+  const safeIndex = ((index % CATEGORY_PALETTE.length) + CATEGORY_PALETTE.length) % CATEGORY_PALETTE.length;
+  return CATEGORY_PALETTE[safeIndex];
+}

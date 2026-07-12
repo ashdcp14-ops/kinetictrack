@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { getExercisesForAreas } from '../data/exercises';
+import { getExercisesForAreas, PROBLEM_AREAS } from '../data/exercises';
 import { getTodayName } from '../data/schedule';
 import ExerciseGuideModal from './ExerciseGuideModal';
 import PostSetFeedbackModal from './PostSetFeedbackModal';
@@ -10,9 +10,10 @@ import WeekDayStrip from './WeekDayStrip';
 import DayCompleteModal from './DayCompleteModal';
 import ProfileScreen from './ProfileScreen';
 import CalendarScreen from './CalendarScreen';
+import BottomNavBar from './BottomNavBar';
 import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 import { getDayCompletion, getProgressColor } from '../utils/progress';
-import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
+import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW, getCategoryAccent } from '../utils/theme';
 
 export default function ExerciseWorkspace({
   userName,
@@ -50,6 +51,14 @@ export default function ExerciseWorkspace({
     setSelectedDayState(day);
     setDayCompleteModalVisible(false);
   }
+
+  function navigate(tab) {
+    setProfileVisible(tab === 'profile');
+    setCalendarVisible(tab === 'calendar');
+    setClinicDashboardVisible(tab === 'clinic');
+  }
+
+  const activeTab = profileVisible ? 'profile' : calendarVisible ? 'calendar' : clinicDashboardVisible ? 'clinic' : 'home';
 
   useEffect(() => {
     loadJSON(STORAGE_KEYS.COMPLETED_BY_DAY, {}).then((saved) => {
@@ -107,7 +116,12 @@ export default function ExerciseWorkspace({
   const dayStruggleEntries = struggleLogs.filter((entry) => dayExerciseIds.includes(entry.exerciseId));
   const dayNoteEntries = postSetNotes.filter((entry) => dayExerciseIds.includes(entry.exerciseId));
 
+  const categoryAccent = daySchedule
+    ? getCategoryAccent(PROBLEM_AREAS.indexOf(daySchedule.category))
+    : null;
+
   return (
+    <View style={styles.screen}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <TouchableOpacity style={styles.greetingButton} onPress={() => setProfileVisible(true)}>
         <View style={styles.profileIconCircle}>
@@ -117,17 +131,6 @@ export default function ExerciseWorkspace({
       </TouchableOpacity>
       <View style={styles.header}>
         <Text style={styles.title}>{isToday ? "Today's Routine" : `${selectedDay}'s Routine`}</Text>
-        <View style={styles.headerButtons}>
-          <TouchableOpacity style={styles.bellButton} onPress={() => setCalendarVisible(true)}>
-            <Text style={styles.bellButtonText}>📅</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.bellButton} onPress={() => setClinicDashboardVisible(true)}>
-            <Text style={styles.bellButtonText}>📋</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.bellButton} onPress={() => setReminderSettingsVisible(true)}>
-            <Text style={styles.bellButtonText}>🔔</Text>
-          </TouchableOpacity>
-        </View>
       </View>
 
       <WeekDayStrip
@@ -143,7 +146,11 @@ export default function ExerciseWorkspace({
 
       {daySchedule ? (
         <>
-          <Text style={styles.todayCategory}>{daySchedule.category}</Text>
+          <View style={[styles.categoryBadge, { backgroundColor: categoryAccent.bg }]}>
+            <Text style={[styles.categoryBadgeText, { color: categoryAccent.text }]}>
+              {daySchedule.category}
+            </Text>
+          </View>
           <View style={styles.dayProgressRow}>
             <View style={styles.dayProgressTrack}>
               <View
@@ -248,41 +255,48 @@ export default function ExerciseWorkspace({
 
       <ClinicDashboard
         visible={clinicDashboardVisible}
-        onClose={() => setClinicDashboardVisible(false)}
+        onClose={() => navigate('home')}
         struggleLogs={struggleLogs}
         postSetNotes={postSetNotes}
+        activeTab={activeTab}
+        onNavigate={navigate}
       />
 
       <ProfileScreen
         visible={profileVisible}
-        onClose={() => setProfileVisible(false)}
+        onClose={() => navigate('home')}
         userName={userName}
         weeklySchedule={weeklySchedule}
         completedByDay={completedByDay}
         struggleLogs={struggleLogs}
         postSetNotes={postSetNotes}
-        onViewClinicDashboard={() => {
-          setProfileVisible(false);
-          setClinicDashboardVisible(true);
-        }}
+        onViewClinicDashboard={() => navigate('clinic')}
         onSwitchUser={onSwitchUser}
-        onViewCalendar={() => {
-          setProfileVisible(false);
-          setCalendarVisible(true);
-        }}
+        onViewCalendar={() => navigate('calendar')}
+        onViewReminders={() => setReminderSettingsVisible(true)}
+        activeTab={activeTab}
+        onNavigate={navigate}
       />
 
       <CalendarScreen
         visible={calendarVisible}
-        onClose={() => setCalendarVisible(false)}
+        onClose={() => navigate('home')}
         weeklySchedule={weeklySchedule}
         onUpdateDaySchedule={onUpdateDaySchedule}
+        activeTab={activeTab}
+        onNavigate={navigate}
       />
     </ScrollView>
+    <BottomNavBar activeTab={activeTab} onNavigate={navigate} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
@@ -290,7 +304,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: SPACING.xl,
     paddingTop: 60,
-    paddingBottom: SPACING.xl,
+    paddingBottom: 100,
   },
   greetingButton: {
     flexDirection: 'row',
@@ -316,24 +330,12 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: SPACING.xl,
   },
   title: {
-    fontSize: FONT_SIZES.xl,
+    fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
     color: COLORS.textPrimary,
-  },
-  headerButtons: {
-    flexDirection: 'row',
-  },
-  bellButton: {
-    padding: SPACING.sm,
-  },
-  bellButtonText: {
-    fontSize: 22,
   },
   changeAreasLink: {
     color: COLORS.primary,
@@ -341,11 +343,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: SPACING.xl,
   },
-  todayCategory: {
+  categoryBadge: {
+    alignSelf: 'flex-start',
+    borderRadius: RADIUS.full,
+    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.md,
+    marginBottom: SPACING.md,
+  },
+  categoryBadgeText: {
     fontSize: FONT_SIZES.sm,
-    color: COLORS.primary,
-    fontWeight: '600',
-    marginBottom: SPACING.sm,
+    fontWeight: '700',
   },
   dayProgressRow: {
     flexDirection: 'row',
