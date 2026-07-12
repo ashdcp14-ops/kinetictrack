@@ -69,10 +69,16 @@ export default function App() {
     return <RoutineScheduleScreen onContinue={selectWeeklySchedule} />;
   }
 
-  function logStruggle(exercise) {
+  function logStruggle(exercise, note) {
     setStruggleLogs((current) => [
       ...current,
-      { id: `${exercise.id}-${Date.now()}`, exerciseId: exercise.id, exerciseName: exercise.name, timestamp: Date.now() },
+      {
+        id: `${exercise.id}-${Date.now()}`,
+        exerciseId: exercise.id,
+        exerciseName: exercise.name,
+        note: note && note.length > 0 ? note : undefined,
+        timestamp: Date.now(),
+      },
     ]);
   }
 

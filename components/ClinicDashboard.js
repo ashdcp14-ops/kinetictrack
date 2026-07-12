@@ -6,6 +6,7 @@ function buildTimeline(struggleLogs, postSetNotes) {
     exerciseName: log.exerciseName,
     timestamp: log.timestamp,
     type: 'struggle',
+    note: log.note,
   }));
   const noteEntries = postSetNotes.map((entry) => ({
     id: entry.id,
