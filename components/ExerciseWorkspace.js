@@ -8,6 +8,7 @@ import ClinicDashboard from './ClinicDashboard';
 import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 
 export default function ExerciseWorkspace({
+  userName,
   problemAreas,
   onLogStruggle,
   onLogFeedback,
@@ -48,6 +49,7 @@ export default function ExerciseWorkspace({
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <Text style={styles.greeting}>Hi, {userName} 👋</Text>
       <View style={styles.header}>
         <Text style={styles.title}>Today's Routine</Text>
         <View style={styles.headerButtons}>
@@ -120,6 +122,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 24,
+  },
+  greeting: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 4,
   },
   header: {
     flexDirection: 'row',
