@@ -27,12 +27,12 @@ export default function PostSetFeedbackModal({ exercise, onSubmit, onSkip }) {
     <Modal visible transparent animationType="fade" onRequestClose={handleSkip}>
       <View style={styles.overlay}>
         <View style={styles.card}>
-          <Text style={styles.title}>¿Cómo te sentiste?</Text>
+          <Text style={styles.title}>How did that feel?</Text>
           <Text style={styles.subtitle}>{exercise.name}</Text>
 
           <TextInput
             style={styles.input}
-            placeholder="Ej. sentí un pinchazo en la 5ª repetición"
+            placeholder="E.g. felt a sharp pinch on the 5th rep"
             value={note}
             onChangeText={setNote}
             autoFocus
@@ -40,11 +40,11 @@ export default function PostSetFeedbackModal({ exercise, onSubmit, onSkip }) {
           />
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Enviar</Text>
+            <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-            <Text style={styles.skipButtonText}>Omitir</Text>
+            <Text style={styles.skipButtonText}>Skip</Text>
           </TouchableOpacity>
         </View>
       </View>

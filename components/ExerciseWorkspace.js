@@ -22,7 +22,7 @@ export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFe
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Rutina de hoy</Text>
+      <Text style={styles.title}>Today's Routine</Text>
 
       {exercises.map((exercise) => {
         const isCompleted = completedIds.includes(exercise.id);
@@ -35,7 +35,7 @@ export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFe
               </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.playButton} onPress={() => setActiveExercise(exercise)}>
-              <Text style={styles.playButtonText}>▶ Ver video</Text>
+              <Text style={styles.playButtonText}>▶ Watch video</Text>
             </TouchableOpacity>
           </View>
         );
