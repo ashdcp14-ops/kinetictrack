@@ -100,6 +100,18 @@ function AppContent() {
     });
   }
 
+  function switchUser() {
+    setUserName(null);
+    setWeeklySchedule(null);
+    // struggleLogs/postSetNotes are cleared via setState below — the existing
+    // persistence effects re-save them as [] once state updates.
+    setStruggleLogs([]);
+    setPostSetNotes([]);
+    removeItem(STORAGE_KEYS.USER_NAME);
+    removeItem(STORAGE_KEYS.WEEKLY_SCHEDULE);
+    removeItem(STORAGE_KEYS.COMPLETED_BY_DAY);
+  }
+
   if (!userName) {
     return <WelcomeScreen onContinue={selectUserName} />;
   }
@@ -139,6 +151,7 @@ function AppContent() {
         postSetNotes={postSetNotes}
         onChangeSchedule={resetWeeklySchedule}
         onUpdateDaySchedule={updateDaySchedule}
+        onSwitchUser={switchUser}
       />
       <StatusBar style="auto" />
     </>

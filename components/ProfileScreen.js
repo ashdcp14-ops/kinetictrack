@@ -35,8 +35,10 @@ export default function ProfileScreen({
   postSetNotes,
   onViewClinicDashboard,
   onViewCalendar,
+  onSwitchUser,
 }) {
   const [weeklyReportVisible, setWeeklyReportVisible] = useState(false);
+  const [confirmingSwitch, setConfirmingSwitch] = useState(false);
 
   if (!visible) {
     return null;
@@ -70,6 +72,28 @@ export default function ProfileScreen({
         <TouchableOpacity style={styles.reportButton} onPress={() => setWeeklyReportVisible(true)}>
           <Text style={styles.reportButtonText}>📄 Weekly report for my PT</Text>
         </TouchableOpacity>
+
+        {confirmingSwitch ? (
+          <View style={styles.switchConfirmBox}>
+            <Text style={styles.switchConfirmText}>
+              Switching users will erase {userName}'s routine, progress, and history on this
+              device. This can't be undone.
+            </Text>
+            <TouchableOpacity style={styles.switchConfirmButton} onPress={onSwitchUser}>
+              <Text style={styles.switchConfirmButtonText}>Yes, switch user</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.switchCancelButton}
+              onPress={() => setConfirmingSwitch(false)}
+            >
+              <Text style={styles.switchCancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity style={styles.switchUserButton} onPress={() => setConfirmingSwitch(true)}>
+            <Text style={styles.switchUserButtonText}>🔄 Switch user</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
 
       <WeeklyReportScreen
@@ -177,6 +201,49 @@ const styles = StyleSheet.create({
   reportButtonText: {
     color: '#2563eb',
     fontSize: 15,
+    fontWeight: '600',
+  },
+  switchUserButton: {
+    marginTop: 24,
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  switchUserButtonText: {
+    color: '#777',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  switchConfirmBox: {
+    marginTop: 24,
+    backgroundColor: '#fef2f2',
+    borderRadius: 10,
+    padding: 16,
+  },
+  switchConfirmText: {
+    fontSize: 14,
+    color: '#333',
+    lineHeight: 20,
+    marginBottom: 16,
+  },
+  switchConfirmButton: {
+    backgroundColor: '#dc2626',
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  switchConfirmButtonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  switchCancelButton: {
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  switchCancelButtonText: {
+    color: '#666',
+    fontSize: 14,
     fontWeight: '600',
   },
 });
