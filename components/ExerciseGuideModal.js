@@ -7,6 +7,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import VideoPlayer from './VideoPlayer';
 
@@ -45,7 +46,20 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
           <Text style={styles.openInYoutube}>Open in YouTube ↗</Text>
         </TouchableOpacity>
 
-        <Text style={styles.description}>{exercise.description}</Text>
+        <View style={styles.instructionBlock}>
+          <Text style={styles.instructionLabel}>Setup</Text>
+          <Text style={styles.instructionText}>{exercise.setup}</Text>
+        </View>
+
+        <View style={styles.instructionBlock}>
+          <Text style={styles.instructionLabel}>Execution</Text>
+          {exercise.steps.map((step, index) => (
+            <View key={index} style={styles.stepRow}>
+              <Text style={styles.stepNumber}>{index + 1}.</Text>
+              <Text style={styles.stepText}>{step}</Text>
+            </View>
+          ))}
+        </View>
 
         {showTroublePrompt ? (
           <>
@@ -116,11 +130,38 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 20,
   },
-  description: {
+  instructionBlock: {
+    marginBottom: 20,
+  },
+  instructionLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#555',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  instructionText: {
     fontSize: 15,
     color: '#333',
     lineHeight: 22,
-    marginBottom: 24,
+  },
+  stepRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  stepNumber: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#2563eb',
+    marginRight: 8,
+    width: 20,
+  },
+  stepText: {
+    flex: 1,
+    fontSize: 15,
+    color: '#333',
+    lineHeight: 22,
   },
   struggleButton: {
     backgroundColor: '#dc2626',
