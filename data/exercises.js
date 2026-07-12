@@ -8,12 +8,12 @@ export const PROBLEM_AREAS = [
 ];
 
 export const PROBLEM_AREA_ICONS = {
-  'Shoulder & Rotator Cuff': '💪',
-  'Hip & Glutes': '🍑',
-  'Knee & Quadriceps / Hamstrings': '🦵',
-  'Lower Back & Core (Spinal Stability)': '🧘',
-  'Upper Back & Arms (Elbow / Wrist)': '🦾',
-  'Advanced Stage: Plyometrics & Agility (Return to Sport)': '🏃',
+  'Shoulder & Rotator Cuff': require('../assets/category-icons/shoulder-rotator-cuff.png'),
+  'Hip & Glutes': require('../assets/category-icons/hip-glutes.png'),
+  'Knee & Quadriceps / Hamstrings': require('../assets/category-icons/knee-quadriceps-hamstrings.png'),
+  'Lower Back & Core (Spinal Stability)': require('../assets/category-icons/lower-back-core.png'),
+  'Upper Back & Arms (Elbow / Wrist)': require('../assets/category-icons/upper-back-arms.png'),
+  'Advanced Stage: Plyometrics & Agility (Return to Sport)': require('../assets/category-icons/advanced-plyometrics-agility.png'),
 };
 
 export const EXERCISES_BY_AREA = {
