@@ -87,7 +87,9 @@ export default function ExerciseWorkspace({
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <TouchableOpacity style={styles.greetingButton} onPress={() => setProfileVisible(true)}>
-        <Text style={styles.profileIcon}>👤</Text>
+        <View style={styles.profileIconCircle}>
+          <Text style={styles.profileIcon}>👤</Text>
+        </View>
         <Text style={styles.greeting}>Hi, {userName} 👋 ›</Text>
       </TouchableOpacity>
       <View style={styles.header}>
@@ -226,9 +228,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 4,
   },
+  profileIconCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#eff6ff',
+    borderWidth: 1,
+    borderColor: '#bfdbfe',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
   profileIcon: {
-    fontSize: 16,
-    marginRight: 6,
+    fontSize: 14,
   },
   greeting: {
     fontSize: 14,

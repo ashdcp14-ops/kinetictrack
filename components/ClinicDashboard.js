@@ -18,7 +18,11 @@ function buildTimeline(struggleLogs, postSetNotes) {
 }
 
 function formatTimestamp(timestamp) {
-  return new Date(timestamp).toLocaleString();
+  const date = new Date(timestamp);
+  const weekday = date.toLocaleDateString(undefined, { weekday: 'long' });
+  const dateLabel = date.toLocaleDateString();
+  const timeLabel = date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  return `${weekday}, ${dateLabel} · ${timeLabel}`;
 }
 
 export default function ClinicDashboard({ visible, onClose, struggleLogs, postSetNotes }) {
