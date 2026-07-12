@@ -87,6 +87,19 @@ function AppContent() {
     removeItem(STORAGE_KEYS.WEEKLY_SCHEDULE);
   }
 
+  function updateDaySchedule(day, newDaySchedule) {
+    setWeeklySchedule((current) => {
+      const updated = { ...current };
+      if (newDaySchedule) {
+        updated[day] = newDaySchedule;
+      } else {
+        delete updated[day];
+      }
+      saveJSON(STORAGE_KEYS.WEEKLY_SCHEDULE, updated);
+      return updated;
+    });
+  }
+
   if (!userName) {
     return <WelcomeScreen onContinue={selectUserName} />;
   }
@@ -125,6 +138,7 @@ function AppContent() {
         struggleLogs={struggleLogs}
         postSetNotes={postSetNotes}
         onChangeSchedule={resetWeeklySchedule}
+        onUpdateDaySchedule={updateDaySchedule}
       />
       <StatusBar style="auto" />
     </>

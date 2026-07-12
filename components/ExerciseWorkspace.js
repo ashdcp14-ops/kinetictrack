@@ -9,6 +9,7 @@ import ClinicDashboard from './ClinicDashboard';
 import WeekDayStrip from './WeekDayStrip';
 import DayCompleteModal from './DayCompleteModal';
 import ProfileScreen from './ProfileScreen';
+import CalendarScreen from './CalendarScreen';
 import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 import { getDayCompletion, getProgressColor } from '../utils/progress';
 
@@ -20,6 +21,7 @@ export default function ExerciseWorkspace({
   struggleLogs,
   postSetNotes,
   onChangeSchedule,
+  onUpdateDaySchedule,
 }) {
   const [selectedDay, setSelectedDayState] = useState(getTodayName());
   const daySchedule = weeklySchedule[selectedDay] ?? null;
@@ -40,6 +42,7 @@ export default function ExerciseWorkspace({
   const [clinicDashboardVisible, setClinicDashboardVisible] = useState(false);
   const [dayCompleteModalVisible, setDayCompleteModalVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
+  const [calendarVisible, setCalendarVisible] = useState(false);
 
   function setSelectedDay(day) {
     setSelectedDayState(day);
@@ -113,6 +116,9 @@ export default function ExerciseWorkspace({
       <View style={styles.header}>
         <Text style={styles.title}>{isToday ? "Today's Routine" : `${selectedDay}'s Routine`}</Text>
         <View style={styles.headerButtons}>
+          <TouchableOpacity style={styles.bellButton} onPress={() => setCalendarVisible(true)}>
+            <Text style={styles.bellButtonText}>📅</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.bellButton} onPress={() => setClinicDashboardVisible(true)}>
             <Text style={styles.bellButtonText}>📋</Text>
           </TouchableOpacity>
@@ -257,6 +263,17 @@ export default function ExerciseWorkspace({
           setProfileVisible(false);
           setClinicDashboardVisible(true);
         }}
+        onViewCalendar={() => {
+          setProfileVisible(false);
+          setCalendarVisible(true);
+        }}
+      />
+
+      <CalendarScreen
+        visible={calendarVisible}
+        onClose={() => setCalendarVisible(false)}
+        weeklySchedule={weeklySchedule}
+        onUpdateDaySchedule={onUpdateDaySchedule}
       />
     </ScrollView>
   );
