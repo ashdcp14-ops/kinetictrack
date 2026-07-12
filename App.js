@@ -4,7 +4,6 @@ import { StyleSheet, View } from 'react-native';
 import WelcomeScreen from './components/WelcomeScreen';
 import RoutineScheduleScreen from './components/RoutineScheduleScreen';
 import ExerciseWorkspace from './components/ExerciseWorkspace';
-import { getTodayName } from './data/schedule';
 import { loadJSON, saveJSON, removeItem, STORAGE_KEYS } from './utils/storage';
 
 export default function App() {
@@ -84,13 +83,11 @@ export default function App() {
     ]);
   }
 
-  const todaySchedule = weeklySchedule[getTodayName()] ?? null;
-
   return (
     <>
       <ExerciseWorkspace
         userName={userName}
-        todaySchedule={todaySchedule}
+        weeklySchedule={weeklySchedule}
         onLogStruggle={logStruggle}
         onLogFeedback={logFeedback}
         struggleLogs={struggleLogs}

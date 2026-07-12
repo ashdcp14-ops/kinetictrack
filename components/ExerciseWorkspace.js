@@ -1,24 +1,28 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getExercisesForAreas } from '../data/exercises';
+import { getTodayName } from '../data/schedule';
 import ExerciseGuideModal from './ExerciseGuideModal';
 import PostSetFeedbackModal from './PostSetFeedbackModal';
 import ReminderSettings from './ReminderSettings';
 import ClinicDashboard from './ClinicDashboard';
+import WeekDayStrip from './WeekDayStrip';
 import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 
 export default function ExerciseWorkspace({
   userName,
-  todaySchedule,
+  weeklySchedule,
   onLogStruggle,
   onLogFeedback,
   struggleLogs,
   postSetNotes,
   onChangeSchedule,
 }) {
-  const exercises = todaySchedule
-    ? getExercisesForAreas([todaySchedule.category]).filter((exercise) =>
-        todaySchedule.exerciseIds.includes(exercise.id)
+  const [selectedDay, setSelectedDay] = useState(getTodayName());
+  const daySchedule = weeklySchedule[selectedDay] ?? null;
+  const exercises = daySchedule
+    ? getExercisesForAreas([daySchedule.category]).filter((exercise) =>
+        daySchedule.exerciseIds.includes(exercise.id)
       )
     : [];
   const [completedIds, setCompletedIds] = useState([]);
@@ -51,11 +55,13 @@ export default function ExerciseWorkspace({
     }
   }
 
+  const isToday = selectedDay === getTodayName();
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.greeting}>Hi, {userName} 👋</Text>
       <View style={styles.header}>
-        <Text style={styles.title}>Today's Routine</Text>
+        <Text style={styles.title}>{isToday ? "Today's Routine" : `${selectedDay}'s Routine`}</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity style={styles.bellButton} onPress={() => setClinicDashboardVisible(true)}>
             <Text style={styles.bellButtonText}>📋</Text>
@@ -66,14 +72,24 @@ export default function ExerciseWorkspace({
         </View>
       </View>
 
+      <WeekDayStrip
+        selectedDay={selectedDay}
+        onSelectDay={setSelectedDay}
+        weeklySchedule={weeklySchedule}
+      />
+
       <TouchableOpacity onPress={onChangeSchedule}>
         <Text style={styles.changeAreasLink}>Edit my routine</Text>
       </TouchableOpacity>
 
-      {todaySchedule ? (
-        <Text style={styles.todayCategory}>{todaySchedule.category}</Text>
+      {daySchedule ? (
+        <Text style={styles.todayCategory}>{daySchedule.category}</Text>
       ) : (
-        <Text style={styles.restDay}>No workout scheduled today — rest day 🌿</Text>
+        <Text style={styles.restDay}>
+          {isToday
+            ? 'No workout scheduled today — rest day 🌿'
+            : `No workout scheduled for ${selectedDay} — rest day 🌿`}
+        </Text>
       )}
 
       {exercises.map((exercise) => {
