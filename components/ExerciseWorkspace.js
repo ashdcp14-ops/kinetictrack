@@ -7,7 +7,9 @@ import PostSetFeedbackModal from './PostSetFeedbackModal';
 import ReminderSettings from './ReminderSettings';
 import ClinicDashboard from './ClinicDashboard';
 import WeekDayStrip from './WeekDayStrip';
+import DayCompleteModal from './DayCompleteModal';
 import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
+import { getDayCompletion, getProgressColor } from '../utils/progress';
 
 export default function ExerciseWorkspace({
   userName,
@@ -31,6 +33,7 @@ export default function ExerciseWorkspace({
   const [feedbackExercise, setFeedbackExercise] = useState(null);
   const [reminderSettingsVisible, setReminderSettingsVisible] = useState(false);
   const [clinicDashboardVisible, setClinicDashboardVisible] = useState(false);
+  const [dayCompleteModalVisible, setDayCompleteModalVisible] = useState(false);
 
   useEffect(() => {
     loadJSON(STORAGE_KEYS.COMPLETED_IDS, []).then((saved) => {
@@ -55,7 +58,21 @@ export default function ExerciseWorkspace({
     }
   }
 
+  function checkDayCompletion() {
+    if (
+      daySchedule &&
+      daySchedule.exerciseIds.length > 0 &&
+      daySchedule.exerciseIds.every((id) => completedIds.includes(id))
+    ) {
+      setDayCompleteModalVisible(true);
+    }
+  }
+
   const isToday = selectedDay === getTodayName();
+  const { percent, doneCount, total } = getDayCompletion(daySchedule, completedIds);
+  const dayExerciseIds = daySchedule?.exerciseIds ?? [];
+  const dayStruggleEntries = struggleLogs.filter((entry) => dayExerciseIds.includes(entry.exerciseId));
+  const dayNoteEntries = postSetNotes.filter((entry) => dayExerciseIds.includes(entry.exerciseId));
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -76,6 +93,7 @@ export default function ExerciseWorkspace({
         selectedDay={selectedDay}
         onSelectDay={setSelectedDay}
         weeklySchedule={weeklySchedule}
+        completedIds={completedIds}
       />
 
       <TouchableOpacity onPress={onChangeSchedule}>
@@ -83,7 +101,22 @@ export default function ExerciseWorkspace({
       </TouchableOpacity>
 
       {daySchedule ? (
-        <Text style={styles.todayCategory}>{daySchedule.category}</Text>
+        <>
+          <Text style={styles.todayCategory}>{daySchedule.category}</Text>
+          <View style={styles.dayProgressRow}>
+            <View style={styles.dayProgressTrack}>
+              <View
+                style={[
+                  styles.dayProgressFill,
+                  { width: `${Math.round(percent * 100)}%`, backgroundColor: getProgressColor(percent) },
+                ]}
+              />
+            </View>
+            <Text style={styles.dayProgressLabel}>
+              {doneCount}/{total}
+            </Text>
+          </View>
+        </>
       ) : (
         <Text style={styles.restDay}>
           {isToday
@@ -120,8 +153,20 @@ export default function ExerciseWorkspace({
         onSubmit={(note) => {
           onLogFeedback(feedbackExercise, note);
           setFeedbackExercise(null);
+          checkDayCompletion();
         }}
-        onSkip={() => setFeedbackExercise(null)}
+        onSkip={() => {
+          setFeedbackExercise(null);
+          checkDayCompletion();
+        }}
+      />
+
+      <DayCompleteModal
+        visible={dayCompleteModalVisible}
+        onClose={() => setDayCompleteModalVisible(false)}
+        dayName={selectedDay}
+        struggleEntries={dayStruggleEntries}
+        noteEntries={dayNoteEntries}
       />
 
       <ReminderSettings
@@ -183,7 +228,29 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2563eb',
     fontWeight: '600',
+    marginBottom: 8,
+  },
+  dayProgressRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 16,
+  },
+  dayProgressTrack: {
+    flex: 1,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#eee',
+    overflow: 'hidden',
+    marginRight: 10,
+  },
+  dayProgressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  dayProgressLabel: {
+    fontSize: 12,
+    color: '#555',
+    fontWeight: '600',
   },
   restDay: {
     fontSize: 15,
