@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const STORAGE_KEYS = {
   USER_NAME: 'kinetictrack.userName',
-  PROBLEM_AREAS: 'kinetictrack.problemAreas',
+  WEEKLY_SCHEDULE: 'kinetictrack.weeklySchedule',
   STRUGGLE_LOGS: 'kinetictrack.struggleLogs',
   POST_SET_NOTES: 'kinetictrack.postSetNotes',
   COMPLETED_IDS: 'kinetictrack.completedIds',
