@@ -5,7 +5,7 @@ export const STORAGE_KEYS = {
   WEEKLY_SCHEDULE: 'kinetictrack.weeklySchedule',
   STRUGGLE_LOGS: 'kinetictrack.struggleLogs',
   POST_SET_NOTES: 'kinetictrack.postSetNotes',
-  COMPLETED_IDS: 'kinetictrack.completedIds',
+  COMPLETED_BY_DAY: 'kinetictrack.completedByDay',
 };
 
 export async function loadJSON(key, fallback) {

@@ -26,6 +26,7 @@ export default function WelcomeScreen({ onContinue }) {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.greeting}>Hi there! 👋</Text>
       <Text style={styles.title}>What's your name?</Text>
       <Text style={styles.subtitle}>We'll use it to personalize your experience.</Text>
 
@@ -56,6 +57,11 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'center',
     paddingHorizontal: 24,
+  },
+  greeting: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 8,
   },
   title: {
     fontSize: 24,

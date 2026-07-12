@@ -21,15 +21,16 @@ export default function ExerciseWorkspace({
   postSetNotes,
   onChangeSchedule,
 }) {
-  const [selectedDay, setSelectedDay] = useState(getTodayName());
+  const [selectedDay, setSelectedDayState] = useState(getTodayName());
   const daySchedule = weeklySchedule[selectedDay] ?? null;
   const exercises = daySchedule
     ? getExercisesForAreas([daySchedule.category]).filter((exercise) =>
         daySchedule.exerciseIds.includes(exercise.id)
       )
     : [];
-  const [completedIds, setCompletedIds] = useState([]);
+  const [completedByDay, setCompletedByDay] = useState({});
   const [hasLoadedCompletedIds, setHasLoadedCompletedIds] = useState(false);
+  const completedIdsForSelectedDay = completedByDay[selectedDay] ?? [];
   const [activeExercise, setActiveExercise] = useState(null);
   const [feedbackExercise, setFeedbackExercise] = useState(null);
   const [reminderSettingsVisible, setReminderSettingsVisible] = useState(false);
@@ -37,48 +38,56 @@ export default function ExerciseWorkspace({
   const [dayCompleteModalVisible, setDayCompleteModalVisible] = useState(false);
   const [profileVisible, setProfileVisible] = useState(false);
 
+  function setSelectedDay(day) {
+    setSelectedDayState(day);
+    setDayCompleteModalVisible(false);
+  }
+
   useEffect(() => {
-    loadJSON(STORAGE_KEYS.COMPLETED_IDS, []).then((saved) => {
-      setCompletedIds(saved);
+    loadJSON(STORAGE_KEYS.COMPLETED_BY_DAY, {}).then((saved) => {
+      setCompletedByDay(saved);
       setHasLoadedCompletedIds(true);
     });
   }, []);
 
   useEffect(() => {
     if (hasLoadedCompletedIds) {
-      saveJSON(STORAGE_KEYS.COMPLETED_IDS, completedIds);
+      saveJSON(STORAGE_KEYS.COMPLETED_BY_DAY, completedByDay);
     }
-  }, [completedIds, hasLoadedCompletedIds]);
+  }, [completedByDay, hasLoadedCompletedIds]);
 
   function toggleCompleted(exercise) {
-    const isNowCompleted = !completedIds.includes(exercise.id);
-    setCompletedIds((current) =>
-      isNowCompleted ? [...current, exercise.id] : current.filter((item) => item !== exercise.id)
-    );
+    const isNowCompleted = !completedIdsForSelectedDay.includes(exercise.id);
+    const updatedList = isNowCompleted
+      ? [...completedIdsForSelectedDay, exercise.id]
+      : completedIdsForSelectedDay.filter((id) => id !== exercise.id);
+    setCompletedByDay((current) => ({ ...current, [selectedDay]: updatedList }));
     if (isNowCompleted) {
       setFeedbackExercise(exercise);
     }
   }
 
   function checkDayCompletion() {
+    const currentList = completedByDay[selectedDay] ?? [];
     if (
       daySchedule &&
       daySchedule.exerciseIds.length > 0 &&
-      daySchedule.exerciseIds.every((id) => completedIds.includes(id))
+      daySchedule.exerciseIds.every((id) => currentList.includes(id))
     ) {
       setDayCompleteModalVisible(true);
     }
   }
 
   const isToday = selectedDay === getTodayName();
-  const { percent, doneCount, total } = getDayCompletion(daySchedule, completedIds);
+  const { percent, doneCount, total } = getDayCompletion(daySchedule, completedIdsForSelectedDay);
   const dayExerciseIds = daySchedule?.exerciseIds ?? [];
   const dayStruggleEntries = struggleLogs.filter((entry) => dayExerciseIds.includes(entry.exerciseId));
   const dayNoteEntries = postSetNotes.filter((entry) => dayExerciseIds.includes(entry.exerciseId));
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <TouchableOpacity onPress={() => setProfileVisible(true)}>
+      <TouchableOpacity style={styles.greetingButton} onPress={() => setProfileVisible(true)}>
+        <Text style={styles.profileIcon}>👤</Text>
         <Text style={styles.greeting}>Hi, {userName} 👋 ›</Text>
       </TouchableOpacity>
       <View style={styles.header}>
@@ -97,7 +106,7 @@ export default function ExerciseWorkspace({
         selectedDay={selectedDay}
         onSelectDay={setSelectedDay}
         weeklySchedule={weeklySchedule}
-        completedIds={completedIds}
+        completedByDay={completedByDay}
       />
 
       <TouchableOpacity onPress={onChangeSchedule}>
@@ -130,7 +139,7 @@ export default function ExerciseWorkspace({
       )}
 
       {exercises.map((exercise) => {
-        const isCompleted = completedIds.includes(exercise.id);
+        const isCompleted = completedIdsForSelectedDay.includes(exercise.id);
         return (
           <View key={exercise.id} style={styles.row}>
             <TouchableOpacity style={styles.checkboxArea} onPress={() => toggleCompleted(exercise)}>
@@ -192,7 +201,7 @@ export default function ExerciseWorkspace({
         onClose={() => setProfileVisible(false)}
         userName={userName}
         weeklySchedule={weeklySchedule}
-        completedIds={completedIds}
+        completedByDay={completedByDay}
         onViewClinicDashboard={() => {
           setProfileVisible(false);
           setClinicDashboardVisible(true);
@@ -212,10 +221,18 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 24,
   },
+  greetingButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  profileIcon: {
+    fontSize: 16,
+    marginRight: 6,
+  },
   greeting: {
     fontSize: 14,
     color: '#555',
-    marginBottom: 4,
   },
   header: {
     flexDirection: 'row',

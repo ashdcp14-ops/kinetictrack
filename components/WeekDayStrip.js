@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { DAYS_OF_WEEK, DAY_ABBREVIATIONS, getTodayName } from '../data/schedule';
 import { getDayCompletion, getProgressColor } from '../utils/progress';
 
-export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule, completedIds }) {
+export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule, completedByDay }) {
   const todayName = getTodayName();
 
   return (
@@ -16,7 +16,7 @@ export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule,
         const isSelected = day === selectedDay;
         const isToday = day === todayName;
         const daySchedule = weeklySchedule[day];
-        const { percent } = getDayCompletion(daySchedule, completedIds);
+        const { percent } = getDayCompletion(daySchedule, completedByDay[day] ?? []);
 
         return (
           <TouchableOpacity

@@ -7,16 +7,16 @@ export function getDayCompletion(daySchedule, completedIds) {
   return { percent: doneCount / total, doneCount, total };
 }
 
-export function getWeekCompletion(weeklySchedule, completedIds) {
-  const scheduledDays = Object.values(weeklySchedule);
-  const total = scheduledDays.reduce((sum, day) => sum + day.exerciseIds.length, 0);
+export function getWeekCompletion(weeklySchedule, completedByDay) {
+  const days = Object.keys(weeklySchedule);
+  const total = days.reduce((sum, day) => sum + weeklySchedule[day].exerciseIds.length, 0);
   if (total === 0) {
     return { percent: 0, doneCount: 0, total: 0 };
   }
-  const doneCount = scheduledDays.reduce(
-    (sum, day) => sum + day.exerciseIds.filter((id) => completedIds.includes(id)).length,
-    0
-  );
+  const doneCount = days.reduce((sum, day) => {
+    const dayCompletedIds = completedByDay[day] ?? [];
+    return sum + weeklySchedule[day].exerciseIds.filter((id) => dayCompletedIds.includes(id)).length;
+  }, 0);
   return { percent: doneCount / total, doneCount, total };
 }
 
