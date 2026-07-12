@@ -1,7 +1,8 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DAYS_OF_WEEK, DAY_ABBREVIATIONS, getTodayName } from '../data/schedule';
+import { getDayCompletion, getProgressColor } from '../utils/progress';
 
-export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule }) {
+export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule, completedIds }) {
   const todayName = getTodayName();
 
   return (
@@ -14,7 +15,8 @@ export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule 
       {DAYS_OF_WEEK.map((day) => {
         const isSelected = day === selectedDay;
         const isToday = day === todayName;
-        const hasRoutine = Boolean(weeklySchedule[day]);
+        const daySchedule = weeklySchedule[day];
+        const { percent } = getDayCompletion(daySchedule, completedIds);
 
         return (
           <TouchableOpacity
@@ -25,8 +27,15 @@ export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule 
             <Text style={[styles.pillDay, isSelected && styles.pillDaySelected]}>
               {DAY_ABBREVIATIONS[day]}
             </Text>
-            {hasRoutine ? (
-              <View style={[styles.routineDot, isSelected && styles.routineDotSelected]} />
+            {daySchedule ? (
+              <View style={[styles.progressTrack, isSelected && styles.progressTrackSelected]}>
+                <View
+                  style={[
+                    styles.progressFill,
+                    { width: `${Math.round(percent * 100)}%`, backgroundColor: getProgressColor(percent) },
+                  ]}
+                />
+              </View>
             ) : (
               <Text style={[styles.restLabel, isSelected && styles.restLabelSelected]}>rest</Text>
             )}
@@ -66,15 +75,20 @@ const styles = StyleSheet.create({
   pillDaySelected: {
     color: '#fff',
   },
-  routineDot: {
-    marginTop: 6,
-    width: 6,
-    height: 6,
+  progressTrack: {
+    marginTop: 8,
+    width: 36,
+    height: 5,
     borderRadius: 3,
-    backgroundColor: '#2563eb',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
   },
-  routineDotSelected: {
-    backgroundColor: '#fff',
+  progressTrackSelected: {
+    backgroundColor: 'rgba(255, 255, 255, 0.35)',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 3,
   },
   restLabel: {
     marginTop: 6,
