@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DAYS_OF_WEEK } from '../data/schedule';
-import { PROBLEM_AREAS, getExercisesForAreas } from '../data/exercises';
+import { PROBLEM_AREAS, PROBLEM_AREA_ICONS, getExercisesForAreas } from '../data/exercises';
 
 const DEFAULT_SETS = 3;
 const DEFAULT_REPS = 10;
@@ -134,12 +134,18 @@ export default function RoutineScheduleScreen({ onContinue }) {
               return (
                 <TouchableOpacity
                   key={category}
-                  style={[styles.option, isSelected && styles.optionSelected]}
+                  style={[styles.option, styles.categoryOption, isSelected && styles.optionSelected]}
                   onPress={() => assignCategory(day, category)}
                 >
-                  <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
-                    {isSelected ? '●' : '○'} {category}
+                  <View style={[styles.categoryIconCircle, isSelected && styles.categoryIconCircleSelected]}>
+                    <Text style={styles.categoryIcon}>{PROBLEM_AREA_ICONS[category]}</Text>
+                  </View>
+                  <Text
+                    style={[styles.optionText, styles.categoryOptionText, isSelected && styles.optionTextSelected]}
+                  >
+                    {category}
                   </Text>
+                  <Text style={styles.categoryRadio}>{isSelected ? '●' : '○'}</Text>
                 </TouchableOpacity>
               );
             })}
@@ -243,6 +249,33 @@ const styles = StyleSheet.create({
   optionTextSelected: {
     color: '#2563eb',
     fontWeight: '600',
+  },
+  categoryOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  categoryIconCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: '#f3f4f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  categoryIconCircleSelected: {
+    backgroundColor: '#dbeafe',
+  },
+  categoryIcon: {
+    fontSize: 17,
+  },
+  categoryOptionText: {
+    flex: 1,
+  },
+  categoryRadio: {
+    fontSize: 16,
+    color: '#2563eb',
+    marginLeft: 8,
   },
   exerciseChecklist: {
     backgroundColor: '#f9fafb',

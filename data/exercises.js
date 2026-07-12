@@ -7,6 +7,15 @@ export const PROBLEM_AREAS = [
   'Advanced Stage: Plyometrics & Agility (Return to Sport)',
 ];
 
+export const PROBLEM_AREA_ICONS = {
+  'Shoulder & Rotator Cuff': '💪',
+  'Hip & Glutes': '🍑',
+  'Knee & Quadriceps / Hamstrings': '🦵',
+  'Lower Back & Core (Spinal Stability)': '🧘',
+  'Upper Back & Arms (Elbow / Wrist)': '🦾',
+  'Advanced Stage: Plyometrics & Agility (Return to Sport)': '🏃',
+};
+
 export const EXERCISES_BY_AREA = {
   'Shoulder & Rotator Cuff': [
     {
