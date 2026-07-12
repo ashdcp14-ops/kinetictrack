@@ -3,12 +3,14 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { getExercisesForAreas } from '../data/exercises';
 import ExerciseGuideModal from './ExerciseGuideModal';
 import PostSetFeedbackModal from './PostSetFeedbackModal';
+import ReminderSettings from './ReminderSettings';
 
 export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFeedback }) {
   const exercises = getExercisesForAreas(problemAreas);
   const [completedIds, setCompletedIds] = useState([]);
   const [activeExercise, setActiveExercise] = useState(null);
   const [feedbackExercise, setFeedbackExercise] = useState(null);
+  const [reminderSettingsVisible, setReminderSettingsVisible] = useState(false);
 
   function toggleCompleted(exercise) {
     const isNowCompleted = !completedIds.includes(exercise.id);
@@ -22,7 +24,12 @@ export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFe
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Today's Routine</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Today's Routine</Text>
+        <TouchableOpacity style={styles.bellButton} onPress={() => setReminderSettingsVisible(true)}>
+          <Text style={styles.bellButtonText}>🔔</Text>
+        </TouchableOpacity>
+      </View>
 
       {exercises.map((exercise) => {
         const isCompleted = completedIds.includes(exercise.id);
@@ -55,6 +62,11 @@ export default function ExerciseWorkspace({ problemAreas, onLogStruggle, onLogFe
         }}
         onSkip={() => setFeedbackExercise(null)}
       />
+
+      <ReminderSettings
+        visible={reminderSettingsVisible}
+        onClose={() => setReminderSettingsVisible(false)}
+      />
     </ScrollView>
   );
 }
@@ -69,10 +81,21 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 24,
   },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+  },
+  bellButton: {
+    padding: 8,
+  },
+  bellButtonText: {
+    fontSize: 22,
   },
   row: {
     flexDirection: 'row',
