@@ -1,20 +1,17 @@
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getExercisesForAreas } from '../data/exercises';
+import ExerciseGuideModal from './ExerciseGuideModal';
 
-export default function ExerciseWorkspace({ problemAreas }) {
+export default function ExerciseWorkspace({ problemAreas, onLogStruggle }) {
   const exercises = getExercisesForAreas(problemAreas);
   const [completedIds, setCompletedIds] = useState([]);
+  const [activeExercise, setActiveExercise] = useState(null);
 
   function toggleCompleted(id) {
     setCompletedIds((current) =>
       current.includes(id) ? current.filter((item) => item !== id) : [...current, id]
     );
-  }
-
-  function playDemoVideo(exerciseName) {
-    // Reproducción real de video llegará en un PR futuro (biblioteca de video).
-    Alert.alert('Video de demostración', exerciseName);
   }
 
   return (
@@ -31,12 +28,18 @@ export default function ExerciseWorkspace({ problemAreas }) {
                 {exercise.name}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.playButton} onPress={() => playDemoVideo(exercise.name)}>
+            <TouchableOpacity style={styles.playButton} onPress={() => setActiveExercise(exercise)}>
               <Text style={styles.playButtonText}>▶ Ver video</Text>
             </TouchableOpacity>
           </View>
         );
       })}
+
+      <ExerciseGuideModal
+        exercise={activeExercise}
+        onClose={() => setActiveExercise(null)}
+        onLogStruggle={onLogStruggle}
+      />
     </ScrollView>
   );
 }
