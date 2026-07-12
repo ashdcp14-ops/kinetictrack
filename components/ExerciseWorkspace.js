@@ -22,6 +22,7 @@ export default function ExerciseWorkspace({
   postSetNotes,
   onChangeSchedule,
   onUpdateDaySchedule,
+  onSwitchUser,
 }) {
   const [selectedDay, setSelectedDayState] = useState(getTodayName());
   const daySchedule = weeklySchedule[selectedDay] ?? null;
@@ -263,6 +264,7 @@ export default function ExerciseWorkspace({
           setProfileVisible(false);
           setClinicDashboardVisible(true);
         }}
+        onSwitchUser={onSwitchUser}
         onViewCalendar={() => {
           setProfileVisible(false);
           setCalendarVisible(true);
