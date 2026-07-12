@@ -22,11 +22,19 @@ function formatTimestamp(timestamp) {
 }
 
 export default function ClinicDashboard({ visible, onClose, struggleLogs, postSetNotes }) {
+  if (!visible) {
+    return null;
+  }
+
   const timeline = buildTimeline(struggleLogs, postSetNotes);
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+    <Modal visible animationType="slide" onRequestClose={onClose}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <TouchableOpacity style={styles.backButton} onPress={onClose}>
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+
         <Text style={styles.title}>Clinic Timeline</Text>
         <Text style={styles.subtitle}>
           Only exercises flagged as difficult or with a pain note appear here.
@@ -50,10 +58,6 @@ export default function ClinicDashboard({ visible, onClose, struggleLogs, postSe
           </View>
         ))}
       </ScrollView>
-
-      <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-        <Text style={styles.closeButtonText}>Close</Text>
-      </TouchableOpacity>
     </Modal>
   );
 }
@@ -67,6 +71,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 24,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 16,
+  },
+  backButtonText: {
+    color: '#2563eb',
+    fontSize: 16,
+    fontWeight: '600',
   },
   title: {
     fontSize: 22,
@@ -116,16 +129,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
     marginTop: 6,
-  },
-  closeButton: {
-    alignItems: 'center',
-    paddingVertical: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  closeButtonText: {
-    color: '#2563eb',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

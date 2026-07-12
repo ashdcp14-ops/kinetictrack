@@ -18,6 +18,10 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <TouchableOpacity style={styles.backButton} onPress={onClose}>
+          <Text style={styles.backButtonText}>← Back</Text>
+        </TouchableOpacity>
+
         <Text style={styles.title}>{exercise.name}</Text>
 
         <VideoPlayer videoUrl={exercise.videoUrl} />
@@ -33,10 +37,6 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
         </TouchableOpacity>
 
         {justLogged && <Text style={styles.confirmation}>Logged ✓</Text>}
-
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeButtonText}>Close</Text>
-        </TouchableOpacity>
       </ScrollView>
     </Modal>
   );
@@ -51,6 +51,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 24,
+  },
+  backButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 16,
+  },
+  backButtonText: {
+    color: '#2563eb',
+    fontSize: 16,
+    fontWeight: '600',
   },
   title: {
     fontSize: 22,
@@ -85,16 +94,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     textAlign: 'center',
     color: '#16a34a',
-    fontWeight: '600',
-  },
-  closeButton: {
-    marginTop: 24,
-    alignItems: 'center',
-    paddingVertical: 14,
-  },
-  closeButtonText: {
-    color: '#2563eb',
-    fontSize: 16,
     fontWeight: '600',
   },
 });
