@@ -1,10 +1,18 @@
+import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import OnboardingScreen from './components/OnboardingScreen';
 
 export default function App() {
+  const [problemAreas, setProblemAreas] = useState(null);
+
+  if (!problemAreas) {
+    return <OnboardingScreen onContinue={setProblemAreas} />;
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      <Text>Zonas seleccionadas: {problemAreas.join(', ')}</Text>
       <StatusBar style="auto" />
     </View>
   );
