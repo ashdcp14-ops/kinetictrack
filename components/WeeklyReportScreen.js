@@ -1,6 +1,7 @@
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getCurrentWeekRange, buildWeeklyReportText, formatDateLabel } from '../utils/report';
 import ExportButton from './ExportButton';
+import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 export default function WeeklyReportScreen({ visible, onClose, userName, struggleLogs, postSetNotes }) {
   if (!visible) {
@@ -38,46 +39,49 @@ export default function WeeklyReportScreen({ visible, onClose, userName, struggl
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
   },
   content: {
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
     paddingTop: 60,
-    paddingBottom: 24,
+    paddingBottom: SPACING.xl,
   },
   backButton: {
     alignSelf: 'flex-start',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   backButtonText: {
-    color: '#2563eb',
-    fontSize: 16,
+    color: COLORS.primary,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: FONT_SIZES.xl,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#2563eb',
+    fontSize: FONT_SIZES.base,
+    color: COLORS.primary,
     fontWeight: '600',
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   helperText: {
-    fontSize: 13,
-    color: '#555',
-    marginBottom: 20,
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.lg,
   },
   previewBox: {
-    backgroundColor: '#f9fafb',
-    borderRadius: 10,
-    padding: 16,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    padding: SPACING.lg,
   },
   previewText: {
-    fontSize: 13,
-    color: '#333',
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textPrimary,
     lineHeight: 20,
     fontFamily: 'monospace',
   },

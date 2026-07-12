@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PROBLEM_AREAS, PROBLEM_AREA_ICONS, getExercisesForAreas } from '../data/exercises';
+import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 const DEFAULT_SETS = 3;
 const DEFAULT_REPS = 10;
@@ -118,22 +119,24 @@ export default function DayScheduleEditor({ daySchedule, onChange }) {
 
 const styles = StyleSheet.create({
   option: {
+    backgroundColor: COLORS.surface,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    marginBottom: 12,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    marginBottom: SPACING.md,
   },
   optionSelected: {
-    borderColor: '#2563eb',
-    backgroundColor: '#eff6ff',
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.primaryLight,
   },
   optionText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
+    color: COLORS.textPrimary,
   },
   optionTextSelected: {
-    color: '#2563eb',
+    color: COLORS.primaryDark,
     fontWeight: '600',
   },
   categoryOption: {
@@ -143,15 +146,15 @@ const styles = StyleSheet.create({
   categoryIconCircle: {
     width: 42,
     height: 42,
-    borderRadius: 21,
-    backgroundColor: '#f3f4f6',
+    borderRadius: RADIUS.full,
+    backgroundColor: COLORS.surfaceMuted,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: SPACING.md,
     overflow: 'hidden',
   },
   categoryIconCircleSelected: {
-    backgroundColor: '#dbeafe',
+    backgroundColor: COLORS.primaryLight,
   },
   categoryIcon: {
     width: 30,
@@ -162,42 +165,43 @@ const styles = StyleSheet.create({
   },
   categoryRadio: {
     fontSize: 16,
-    color: '#2563eb',
-    marginLeft: 8,
+    color: COLORS.primary,
+    marginLeft: SPACING.sm,
   },
   exerciseChecklist: {
-    backgroundColor: '#f9fafb',
-    borderRadius: 8,
-    padding: 14,
-    marginTop: 4,
+    backgroundColor: COLORS.surfaceMuted,
+    borderRadius: RADIUS.md,
+    padding: SPACING.lg,
+    marginTop: SPACING.xs,
   },
   exerciseChecklistLabel: {
-    fontSize: 13,
+    fontSize: FONT_SIZES.sm,
     fontWeight: '600',
-    color: '#555',
-    marginBottom: 10,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.md,
   },
   exerciseBlock: {
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
   exerciseOption: {
-    paddingVertical: 8,
+    paddingVertical: SPACING.sm,
   },
   exerciseOptionText: {
-    fontSize: 15,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textPrimary,
   },
   stepperRow: {
     flexDirection: 'row',
-    marginBottom: 12,
-    marginLeft: 8,
+    marginBottom: SPACING.md,
+    marginLeft: SPACING.sm,
   },
   stepper: {
-    marginRight: 24,
+    marginRight: SPACING.xl,
   },
   stepperLabel: {
-    fontSize: 12,
-    color: '#777',
-    marginBottom: 4,
+    fontSize: FONT_SIZES.xs,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xs,
   },
   stepperControls: {
     flexDirection: 'row',
@@ -206,20 +210,23 @@ const styles = StyleSheet.create({
   stepperButton: {
     width: 28,
     height: 28,
-    borderRadius: 14,
-    backgroundColor: '#e5e7eb',
+    borderRadius: RADIUS.full,
+    backgroundColor: COLORS.surfaceMuted,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
   stepperButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#333',
+    color: COLORS.textPrimary,
   },
   stepperValue: {
     width: 32,
     textAlign: 'center',
-    fontSize: 15,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
+    color: COLORS.textPrimary,
   },
 });

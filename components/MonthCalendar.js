@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PROBLEM_AREA_ICONS } from '../data/exercises';
+import { COLORS, SPACING, FONT_SIZES } from '../utils/theme';
 
 const MONTH_NAMES = [
   'January',
@@ -98,23 +99,24 @@ const CELL_WIDTH = `${100 / 7}%`;
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   monthLabel: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '700',
-    marginBottom: 12,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.md,
     textAlign: 'center',
   },
   weekdayRow: {
     flexDirection: 'row',
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
   weekdayLabel: {
     width: CELL_WIDTH,
     textAlign: 'center',
-    fontSize: 12,
-    color: '#999',
+    fontSize: FONT_SIZES.xs,
+    color: COLORS.textMuted,
     fontWeight: '600',
   },
   grid: {
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
   cell: {
     width: CELL_WIDTH,
     alignItems: 'center',
-    paddingVertical: 4,
+    paddingVertical: SPACING.xs,
   },
   dateCircle: {
     width: 28,
@@ -134,14 +136,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dateCircleToday: {
-    backgroundColor: '#2563eb',
+    backgroundColor: COLORS.primary,
   },
   dateText: {
-    fontSize: 13,
-    color: '#333',
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textPrimary,
   },
   dateTextToday: {
-    color: '#fff',
+    color: COLORS.white,
     fontWeight: '700',
   },
   routineIcon: {

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
 
 export default function WelcomeScreen({ onContinue }) {
   const [name, setName] = useState('');
@@ -33,6 +34,7 @@ export default function WelcomeScreen({ onContinue }) {
       <TextInput
         style={styles.input}
         placeholder="Your name"
+        placeholderTextColor={COLORS.textMuted}
         value={name}
         onChangeText={setName}
         autoFocus
@@ -53,47 +55,54 @@ export default function WelcomeScreen({ onContinue }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: COLORS.background,
     alignItems: 'stretch',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
   },
   greeting: {
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 8,
+    fontSize: FONT_SIZES.md,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.sm,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: FONT_SIZES.xxl,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.sm,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 24,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xl,
+    lineHeight: 21,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    marginBottom: 16,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.lg,
+    fontSize: FONT_SIZES.md,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.lg,
   },
   button: {
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-    paddingVertical: 14,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
     alignItems: 'center',
+    ...SHADOW.card,
   },
   buttonDisabled: {
-    backgroundColor: '#93c5fd',
+    backgroundColor: COLORS.primaryBorder,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
 });

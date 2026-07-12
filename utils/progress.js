@@ -32,15 +32,4 @@ export function getWeekCompletion(weeklySchedule, completedByDay) {
   return { percent: doneCount / total, doneCount, total };
 }
 
-export function getProgressColor(percent) {
-  if (percent >= 1) {
-    return '#16a34a';
-  }
-  if (percent >= 0.66) {
-    return '#eab308';
-  }
-  if (percent >= 0.33) {
-    return '#f97316';
-  }
-  return '#dc2626';
-}
+export { getProgressColor } from './theme';

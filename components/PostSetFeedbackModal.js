@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
 
 export default function PostSetFeedbackModal({ exercise, onSubmit, onSkip }) {
   const [note, setNote] = useState('');
@@ -55,53 +56,57 @@ export default function PostSetFeedbackModal({ exercise, onSubmit, onSkip }) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(35, 50, 56, 0.5)',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
   },
   card: {
     width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
+    padding: SPACING.xl,
+    ...SHADOW.raised,
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: FONT_SIZES.lg,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 16,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.lg,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
+    borderColor: COLORS.border,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    padding: SPACING.md,
     minHeight: 80,
     textAlignVertical: 'top',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
+    color: COLORS.textPrimary,
   },
   submitButton: {
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-    paddingVertical: 14,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
   skipButton: {
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: SPACING.md,
   },
   skipButtonText: {
-    color: '#666',
-    fontSize: 14,
+    color: COLORS.textSecondary,
+    fontSize: FONT_SIZES.sm,
   },
 });

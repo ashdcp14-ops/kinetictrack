@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
 
 export default function ExportButton({ reportText }) {
   async function handleExport() {
@@ -31,15 +32,15 @@ export default function ExportButton({ reportText }) {
 
 const styles = StyleSheet.create({
   button: {
-    marginTop: 16,
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-    paddingVertical: 14,
+    marginTop: SPACING.lg,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.lg,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
 });

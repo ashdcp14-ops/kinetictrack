@@ -1,4 +1,5 @@
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
 
 export default function DayCompleteModal({ visible, onClose, dayName, struggleEntries, noteEntries }) {
   if (!visible) {
@@ -56,67 +57,69 @@ export default function DayCompleteModal({ visible, onClose, dayName, struggleEn
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(35, 50, 56, 0.5)',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
   },
   card: {
     maxHeight: '80%',
     width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.lg,
+    ...SHADOW.raised,
   },
   cardContent: {
-    padding: 24,
+    padding: SPACING.xl,
     alignItems: 'center',
   },
   emoji: {
     fontSize: 40,
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
+    fontSize: FONT_SIZES.xl,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 20,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.lg,
     textAlign: 'center',
   },
   emptyState: {
-    fontSize: 14,
-    color: '#999',
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textMuted,
     fontStyle: 'italic',
-    marginBottom: 20,
+    marginBottom: SPACING.lg,
   },
   section: {
     width: '100%',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   sectionTitle: {
-    fontSize: 13,
+    fontSize: FONT_SIZES.sm,
     fontWeight: '700',
-    color: '#555',
-    marginBottom: 6,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.sm,
   },
   entryText: {
-    fontSize: 14,
-    color: '#333',
-    marginBottom: 4,
+    fontSize: FONT_SIZES.base,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.xs,
   },
   closeButton: {
-    marginTop: 8,
-    backgroundColor: '#2563eb',
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 32,
+    marginTop: SPACING.sm,
+    backgroundColor: COLORS.primary,
+    borderRadius: RADIUS.md,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.xxl,
   },
   closeButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
 });
