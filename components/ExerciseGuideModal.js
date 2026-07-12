@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Linking, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, Modal, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import VideoPlayer from './VideoPlayer';
 
 export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle }) {
   const [justLogged, setJustLogged] = useState(false);
@@ -14,19 +15,18 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
     setTimeout(() => setJustLogged(false), 1500);
   }
 
-  function handleWatchVideo() {
-    Linking.openURL(exercise.videoUrl);
-  }
-
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Text style={styles.title}>{exercise.name}</Text>
-        <Text style={styles.description}>{exercise.description}</Text>
 
-        <TouchableOpacity style={styles.videoButton} onPress={handleWatchVideo}>
-          <Text style={styles.videoButtonText}>▶ Watch demo video</Text>
+        <VideoPlayer videoUrl={exercise.videoUrl} />
+
+        <TouchableOpacity onPress={() => Linking.openURL(exercise.videoUrl)}>
+          <Text style={styles.openInYoutube}>Open in YouTube ↗</Text>
         </TouchableOpacity>
+
+        <Text style={styles.description}>{exercise.description}</Text>
 
         <TouchableOpacity style={styles.struggleButton} onPress={handleStruggle}>
           <Text style={styles.struggleButtonText}>I'm Having Trouble with This</Text>
@@ -57,23 +57,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 12,
   },
+  openInYoutube: {
+    color: '#2563eb',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 20,
+  },
   description: {
     fontSize: 15,
     color: '#333',
     lineHeight: 22,
     marginBottom: 24,
-  },
-  videoButton: {
-    backgroundColor: '#111',
-    borderRadius: 8,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  videoButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   struggleButton: {
     backgroundColor: '#dc2626',
