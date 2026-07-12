@@ -25,6 +25,7 @@ export default function DayCompleteModal({ visible, onClose, dayName, struggleEn
                   {struggleEntries.map((entry) => (
                     <Text key={entry.id} style={styles.entryText}>
                       • {entry.exerciseName}
+                      {entry.note ? `: "${entry.note}"` : ''}
                     </Text>
                   ))}
                 </View>

@@ -1,16 +1,28 @@
 import { useState } from 'react';
-import { Linking, Modal, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import {
+  Linking,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import VideoPlayer from './VideoPlayer';
 
 export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle }) {
   const [justLogged, setJustLogged] = useState(false);
+  const [showTroublePrompt, setShowTroublePrompt] = useState(false);
+  const [troubleNote, setTroubleNote] = useState('');
 
   if (!exercise) {
     return null;
   }
 
-  function handleStruggle() {
-    onLogStruggle(exercise);
+  function finishLoggingTrouble(note) {
+    onLogStruggle(exercise, note);
+    setTroubleNote('');
+    setShowTroublePrompt(false);
     setJustLogged(true);
     setTimeout(() => setJustLogged(false), 1500);
   }
@@ -35,9 +47,32 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
 
         <Text style={styles.description}>{exercise.description}</Text>
 
-        <TouchableOpacity style={styles.struggleButton} onPress={handleStruggle}>
-          <Text style={styles.struggleButtonText}>I'm Having Trouble with This</Text>
-        </TouchableOpacity>
+        {showTroublePrompt ? (
+          <>
+            <Text style={styles.troublePromptLabel}>What's going on? (optional)</Text>
+            <TextInput
+              style={styles.troubleInput}
+              placeholder="E.g. sharp pinch on the 5th rep"
+              value={troubleNote}
+              onChangeText={setTroubleNote}
+              autoFocus
+              multiline
+            />
+            <TouchableOpacity
+              style={styles.troubleSubmitButton}
+              onPress={() => finishLoggingTrouble(troubleNote.trim())}
+            >
+              <Text style={styles.troubleSubmitButtonText}>Submit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.troubleSkipButton} onPress={() => finishLoggingTrouble('')}>
+              <Text style={styles.troubleSkipButtonText}>Skip</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity style={styles.struggleButton} onPress={() => setShowTroublePrompt(true)}>
+            <Text style={styles.struggleButtonText}>I'm Having Trouble with This</Text>
+          </TouchableOpacity>
+        )}
 
         {justLogged && <Text style={styles.confirmation}>Logged ✓</Text>}
       </ScrollView>
@@ -98,6 +133,41 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     textAlign: 'center',
+  },
+  troublePromptLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 8,
+  },
+  troubleInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 12,
+    minHeight: 80,
+    textAlignVertical: 'top',
+    marginBottom: 12,
+  },
+  troubleSubmitButton: {
+    backgroundColor: '#dc2626',
+    borderRadius: 10,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  troubleSubmitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  troubleSkipButton: {
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  troubleSkipButtonText: {
+    color: '#666',
+    fontSize: 14,
   },
   confirmation: {
     marginTop: 12,
