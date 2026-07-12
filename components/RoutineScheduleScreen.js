@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { DAYS_OF_WEEK } from '../data/schedule';
 import { PROBLEM_AREAS, PROBLEM_AREA_ICONS, getExercisesForAreas } from '../data/exercises';
 
@@ -138,7 +138,7 @@ export default function RoutineScheduleScreen({ onContinue }) {
                   onPress={() => assignCategory(day, category)}
                 >
                   <View style={[styles.categoryIconCircle, isSelected && styles.categoryIconCircleSelected]}>
-                    <Text style={styles.categoryIcon}>{PROBLEM_AREA_ICONS[category]}</Text>
+                    <Image source={PROBLEM_AREA_ICONS[category]} style={styles.categoryIcon} resizeMode="contain" />
                   </View>
                   <Text
                     style={[styles.optionText, styles.categoryOptionText, isSelected && styles.optionTextSelected]}
@@ -255,19 +255,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryIconCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     backgroundColor: '#f3f4f6',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    overflow: 'hidden',
   },
   categoryIconCircleSelected: {
     backgroundColor: '#dbeafe',
   },
   categoryIcon: {
-    fontSize: 17,
+    width: 30,
+    height: 30,
   },
   categoryOptionText: {
     flex: 1,
