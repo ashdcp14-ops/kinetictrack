@@ -8,6 +8,7 @@ import ReminderSettings from './ReminderSettings';
 import ClinicDashboard from './ClinicDashboard';
 import WeekDayStrip from './WeekDayStrip';
 import DayCompleteModal from './DayCompleteModal';
+import ProfileScreen from './ProfileScreen';
 import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 import { getDayCompletion, getProgressColor } from '../utils/progress';
 
@@ -34,6 +35,7 @@ export default function ExerciseWorkspace({
   const [reminderSettingsVisible, setReminderSettingsVisible] = useState(false);
   const [clinicDashboardVisible, setClinicDashboardVisible] = useState(false);
   const [dayCompleteModalVisible, setDayCompleteModalVisible] = useState(false);
+  const [profileVisible, setProfileVisible] = useState(false);
 
   useEffect(() => {
     loadJSON(STORAGE_KEYS.COMPLETED_IDS, []).then((saved) => {
@@ -76,7 +78,9 @@ export default function ExerciseWorkspace({
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.greeting}>Hi, {userName} 👋</Text>
+      <TouchableOpacity onPress={() => setProfileVisible(true)}>
+        <Text style={styles.greeting}>Hi, {userName} 👋 ›</Text>
+      </TouchableOpacity>
       <View style={styles.header}>
         <Text style={styles.title}>{isToday ? "Today's Routine" : `${selectedDay}'s Routine`}</Text>
         <View style={styles.headerButtons}>
@@ -181,6 +185,18 @@ export default function ExerciseWorkspace({
         onClose={() => setClinicDashboardVisible(false)}
         struggleLogs={struggleLogs}
         postSetNotes={postSetNotes}
+      />
+
+      <ProfileScreen
+        visible={profileVisible}
+        onClose={() => setProfileVisible(false)}
+        userName={userName}
+        weeklySchedule={weeklySchedule}
+        completedIds={completedIds}
+        onViewClinicDashboard={() => {
+          setProfileVisible(false);
+          setClinicDashboardVisible(true);
+        }}
       />
     </ScrollView>
   );
