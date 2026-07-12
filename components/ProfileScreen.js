@@ -1,6 +1,7 @@
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getTodayName } from '../data/schedule';
 import { getDayCompletion, getWeekCompletion, getProgressColor } from '../utils/progress';
+import MonthCalendar from './MonthCalendar';
 
 function ProgressCard({ label, stats }) {
   return (
@@ -51,6 +52,10 @@ export default function ProfileScreen({
 
         <ProgressCard label="Today's progress" stats={todayStats} />
         <ProgressCard label="This week's progress" stats={weekStats} />
+
+        <View style={styles.card}>
+          <MonthCalendar weeklySchedule={weeklySchedule} />
+        </View>
 
         <TouchableOpacity style={styles.clinicButton} onPress={onViewClinicDashboard}>
           <Text style={styles.clinicButtonText}>📋 View my comments &amp; flags</Text>
