@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const PROBLEM_AREAS = ['Rodilla', 'Cadera', 'Hombro'];
+const PROBLEM_AREAS = ['Knee', 'Hip', 'Shoulder'];
 
 export default function OnboardingScreen({ onContinue }) {
   const [selectedAreas, setSelectedAreas] = useState([]);
@@ -16,9 +16,9 @@ export default function OnboardingScreen({ onContinue }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¿Qué estás recuperando?</Text>
+      <Text style={styles.title}>What are you recovering from?</Text>
       <Text style={styles.subtitle}>
-        Selecciona tu zona de lesión para ver ejercicios relevantes.
+        Select your injury area to see relevant exercises.
       </Text>
 
       {PROBLEM_AREAS.map((area) => {
@@ -41,7 +41,7 @@ export default function OnboardingScreen({ onContinue }) {
         disabled={selectedAreas.length === 0}
         onPress={() => onContinue(selectedAreas)}
       >
-        <Text style={styles.continueButtonText}>Continuar</Text>
+        <Text style={styles.continueButtonText}>Continue</Text>
       </TouchableOpacity>
     </View>
   );

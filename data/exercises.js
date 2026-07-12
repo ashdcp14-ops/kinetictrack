@@ -1,15 +1,15 @@
 export const EXERCISES_BY_AREA = {
-  Rodilla: [
-    { id: 'rodilla-1', name: 'Extensión de rodilla sentado' },
-    { id: 'rodilla-2', name: 'Elevación de pierna recta' },
+  Knee: [
+    { id: 'knee-1', name: 'Seated Knee Extension' },
+    { id: 'knee-2', name: 'Straight Leg Raise' },
   ],
-  Cadera: [
-    { id: 'cadera-1', name: 'Puente de glúteos' },
-    { id: 'cadera-2', name: 'Abducción de cadera de pie' },
+  Hip: [
+    { id: 'hip-1', name: 'Glute Bridge' },
+    { id: 'hip-2', name: 'Standing Hip Abduction' },
   ],
-  Hombro: [
-    { id: 'hombro-1', name: 'Rotación externa con banda' },
-    { id: 'hombro-2', name: 'Elevación frontal asistida' },
+  Shoulder: [
+    { id: 'shoulder-1', name: 'Band External Rotation' },
+    { id: 'shoulder-2', name: 'Assisted Front Raise' },
   ],
 };
 

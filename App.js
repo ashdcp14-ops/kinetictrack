@@ -6,6 +6,7 @@ import ExerciseWorkspace from './components/ExerciseWorkspace';
 export default function App() {
   const [problemAreas, setProblemAreas] = useState(null);
   const [struggleLogs, setStruggleLogs] = useState([]);
+  const [postSetNotes, setPostSetNotes] = useState([]);
 
   if (!problemAreas) {
     return <OnboardingScreen onContinue={setProblemAreas} />;
@@ -18,9 +19,20 @@ export default function App() {
     ]);
   }
 
+  function logFeedback(exercise, note) {
+    setPostSetNotes((current) => [
+      ...current,
+      { id: `${exercise.id}-${Date.now()}`, exerciseId: exercise.id, exerciseName: exercise.name, note, timestamp: Date.now() },
+    ]);
+  }
+
   return (
     <>
-      <ExerciseWorkspace problemAreas={problemAreas} onLogStruggle={logStruggle} />
+      <ExerciseWorkspace
+        problemAreas={problemAreas}
+        onLogStruggle={logStruggle}
+        onLogFeedback={logFeedback}
+      />
       <StatusBar style="auto" />
     </>
   );

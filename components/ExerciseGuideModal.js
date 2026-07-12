@@ -20,17 +20,17 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
         <Text style={styles.title}>{exercise.name}</Text>
 
         <View style={styles.videoPlaceholder}>
-          <Text style={styles.videoPlaceholderText}>▶ Video de demostración</Text>
+          <Text style={styles.videoPlaceholderText}>▶ Demo video</Text>
         </View>
 
         <TouchableOpacity style={styles.struggleButton} onPress={handleStruggle}>
-          <Text style={styles.struggleButtonText}>Estoy teniendo dificultad con esto</Text>
+          <Text style={styles.struggleButtonText}>I'm Having Trouble with This</Text>
         </TouchableOpacity>
 
-        {justLogged && <Text style={styles.confirmation}>Registrado ✓</Text>}
+        {justLogged && <Text style={styles.confirmation}>Logged ✓</Text>}
 
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeButtonText}>Cerrar</Text>
+          <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
       </View>
     </Modal>
