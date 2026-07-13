@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { getExercisesForAreas, PROBLEM_AREAS } from '../data/exercises';
 import { getTodayName } from '../data/schedule';
 import ExerciseGuideModal from './ExerciseGuideModal';
@@ -125,12 +125,15 @@ export default function ExerciseWorkspace({
   return (
     <View style={styles.screen}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <TouchableOpacity style={styles.greetingButton} onPress={() => setProfileVisible(true)}>
-        <View style={styles.profileIconCircle}>
-          <Text style={styles.profileIcon}>👤</Text>
-        </View>
-        <Text style={styles.greeting}>{t('exerciseWorkspace.greeting', userName)}</Text>
-      </TouchableOpacity>
+      <View style={styles.topBar}>
+        <Image source={require('../assets/logo.png')} style={styles.logo} resizeMode="contain" />
+        <TouchableOpacity style={styles.greetingButton} onPress={() => setProfileVisible(true)}>
+          <View style={styles.profileIconCircle}>
+            <Text style={styles.profileIcon}>👤</Text>
+          </View>
+          <Text style={styles.greeting}>{t('exerciseWorkspace.greeting', userName)}</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.header}>
         <Text style={styles.title}>
           {isToday ? t('exerciseWorkspace.todaysRoutine') : t('exerciseWorkspace.dayRoutine', translateDay(selectedDay))}
@@ -311,10 +314,19 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 100,
   },
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: SPACING.xs,
+  },
+  logo: {
+    width: 32,
+    height: 32,
+  },
   greetingButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: SPACING.xs,
   },
   profileIconCircle: {
     width: 30,

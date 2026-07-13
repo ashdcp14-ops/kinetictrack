@@ -1,9 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
 
 export default function LanguageSelectScreen({ onSelect }) {
   return (
     <View style={styles.container}>
+      <Image source={require('../assets/logo.png')} style={styles.logo} resizeMode="contain" />
       <Text style={styles.title}>Welcome to KineticTrack{'\n'}Bienvenido a KineticTrack</Text>
       <Text style={styles.subtitle}>
         Choose your preferred language{'\n'}Elige tu idioma preferido
@@ -27,6 +28,12 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'center',
     paddingHorizontal: SPACING.xl,
+  },
+  logo: {
+    width: 96,
+    height: 96,
+    alignSelf: 'center',
+    marginBottom: SPACING.lg,
   },
   title: {
     fontSize: FONT_SIZES.xl,
