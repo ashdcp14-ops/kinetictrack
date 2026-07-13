@@ -14,6 +14,7 @@ import BottomNavBar from './BottomNavBar';
 import { loadJSON, saveJSON, STORAGE_KEYS } from '../utils/storage';
 import { getDayCompletion, getProgressColor } from '../utils/progress';
 import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW, getCategoryAccent } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function ExerciseWorkspace({
   userName,
@@ -26,6 +27,7 @@ export default function ExerciseWorkspace({
   onUpdateDaySchedule,
   onSwitchUser,
 }) {
+  const { t, translateCategory, translateDay, translateExercise } = useLanguage();
   const [selectedDay, setSelectedDayState] = useState(getTodayName());
   const daySchedule = weeklySchedule[selectedDay] ?? null;
   const categoryExercises = daySchedule ? getExercisesForAreas([daySchedule.category]) : [];
@@ -127,10 +129,12 @@ export default function ExerciseWorkspace({
         <View style={styles.profileIconCircle}>
           <Text style={styles.profileIcon}>👤</Text>
         </View>
-        <Text style={styles.greeting}>Hi, {userName} 👋 ›</Text>
+        <Text style={styles.greeting}>{t('exerciseWorkspace.greeting', userName)}</Text>
       </TouchableOpacity>
       <View style={styles.header}>
-        <Text style={styles.title}>{isToday ? "Today's Routine" : `${selectedDay}'s Routine`}</Text>
+        <Text style={styles.title}>
+          {isToday ? t('exerciseWorkspace.todaysRoutine') : t('exerciseWorkspace.dayRoutine', translateDay(selectedDay))}
+        </Text>
       </View>
 
       <WeekDayStrip
@@ -141,14 +145,14 @@ export default function ExerciseWorkspace({
       />
 
       <TouchableOpacity onPress={onChangeSchedule}>
-        <Text style={styles.changeAreasLink}>Edit my routine</Text>
+        <Text style={styles.changeAreasLink}>{t('exerciseWorkspace.editRoutine')}</Text>
       </TouchableOpacity>
 
       {daySchedule ? (
         <>
           <View style={[styles.categoryBadge, { backgroundColor: categoryAccent.bg }]}>
             <Text style={[styles.categoryBadgeText, { color: categoryAccent.text }]}>
-              {daySchedule.category}
+              {translateCategory(daySchedule.category)}
             </Text>
           </View>
           <View style={styles.dayProgressRow}>
@@ -161,31 +165,32 @@ export default function ExerciseWorkspace({
               />
             </View>
             <Text style={styles.dayProgressLabel}>
-              {doneCount}/{total} sets
+              {t('exerciseWorkspace.dayProgressLabel', doneCount, total)}
             </Text>
           </View>
         </>
       ) : (
         <Text style={styles.restDay}>
           {isToday
-            ? 'No workout scheduled today — rest day 🌿'
-            : `No workout scheduled for ${selectedDay} — rest day 🌿`}
+            ? t('exerciseWorkspace.restDayToday')
+            : t('exerciseWorkspace.restDayOther', translateDay(selectedDay))}
         </Text>
       )}
 
       {exercises.map((exercise) => {
         const doneSets = completedSetsForSelectedDay[exercise.id] ?? 0;
         const isFullyDone = doneSets >= exercise.sets;
+        const localizedExercise = translateExercise(exercise);
         return (
           <View key={exercise.id} style={styles.row}>
             <View style={styles.rowTop}>
               <TouchableOpacity style={styles.nameArea} onPress={() => setActiveExercise(exercise)}>
                 <Text style={[styles.exerciseName, isFullyDone && styles.exerciseNameDone]}>
-                  {exercise.name}
+                  {localizedExercise.name}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.playButton} onPress={() => setActiveExercise(exercise)}>
-                <Text style={styles.playButtonText}>▶ Watch video</Text>
+                <Text style={styles.playButtonText}>{t('exerciseWorkspace.watchVideo')}</Text>
               </TouchableOpacity>
             </View>
 
@@ -198,7 +203,7 @@ export default function ExerciseWorkspace({
                 ))}
               </View>
               <Text style={styles.setsLabel}>
-                {doneSets}/{exercise.sets} sets · {exercise.reps} reps
+                {t('exerciseWorkspace.setsLabel', doneSets, exercise.sets, exercise.reps)}
               </Text>
               <View style={styles.setsButtons}>
                 <TouchableOpacity
@@ -206,7 +211,7 @@ export default function ExerciseWorkspace({
                   disabled={isFullyDone}
                   onPress={() => logSet(exercise)}
                 >
-                  <Text style={styles.logSetButtonText}>+ Log Set</Text>
+                  <Text style={styles.logSetButtonText}>{t('exerciseWorkspace.logSet')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.undoButton, doneSets === 0 && styles.setsButtonDisabled]}
@@ -230,7 +235,7 @@ export default function ExerciseWorkspace({
       <PostSetFeedbackModal
         exercise={feedbackExercise}
         onSubmit={(note) => {
-          onLogFeedback(feedbackExercise, note);
+          onLogFeedback(translateExercise(feedbackExercise), note);
           setFeedbackExercise(null);
           checkDayCompletion();
         }}

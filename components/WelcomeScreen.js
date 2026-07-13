@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function WelcomeScreen({ onContinue }) {
+  const { t } = useLanguage();
   const [name, setName] = useState('');
   const [step, setStep] = useState('ask');
 
@@ -16,10 +18,10 @@ export default function WelcomeScreen({ onContinue }) {
   if (step === 'welcome') {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Welcome to KineticTrack, {name.trim()}!</Text>
-        <Text style={styles.subtitle}>Let's get your recovery plan set up.</Text>
+        <Text style={styles.title}>{t('welcome.welcomeTitle', name.trim())}</Text>
+        <Text style={styles.subtitle}>{t('welcome.welcomeSubtitle')}</Text>
         <TouchableOpacity style={styles.button} onPress={() => onContinue(name.trim())}>
-          <Text style={styles.buttonText}>Get Started</Text>
+          <Text style={styles.buttonText}>{t('welcome.getStarted')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -27,13 +29,13 @@ export default function WelcomeScreen({ onContinue }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.greeting}>Hi there! 👋</Text>
-      <Text style={styles.title}>What's your name?</Text>
-      <Text style={styles.subtitle}>We'll use it to personalize your experience.</Text>
+      <Text style={styles.greeting}>{t('welcome.greeting')}</Text>
+      <Text style={styles.title}>{t('welcome.askTitle')}</Text>
+      <Text style={styles.subtitle}>{t('welcome.askSubtitle')}</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Your name"
+        placeholder={t('welcome.namePlaceholder')}
         placeholderTextColor={COLORS.textMuted}
         value={name}
         onChangeText={setName}
@@ -46,7 +48,7 @@ export default function WelcomeScreen({ onContinue }) {
         disabled={name.trim().length === 0}
         onPress={handleAskContinue}
       >
-        <Text style={styles.buttonText}>Continue</Text>
+        <Text style={styles.buttonText}>{t('welcome.continue')}</Text>
       </TouchableOpacity>
     </View>
   );

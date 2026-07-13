@@ -27,32 +27,32 @@ function getEntriesThisWeek(struggleLogs, postSetNotes) {
   return [...struggleEntries, ...noteEntries].sort((a, b) => a.timestamp - b.timestamp);
 }
 
-function formatDateLabel(date) {
-  return date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+function formatDateLabel(date, locale) {
+  return date.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-export function buildWeeklyReportText({ userName, struggleLogs, postSetNotes }) {
+export function buildWeeklyReportText({ userName, struggleLogs, postSetNotes, t, locale }) {
   const { start, end } = getCurrentWeekRange();
   const entries = getEntriesThisWeek(struggleLogs, postSetNotes);
 
-  let text = 'KineticTrack Weekly Report\n';
-  text += `Patient: ${userName}\n`;
-  text += `Week: ${formatDateLabel(start)} - ${formatDateLabel(end)}\n\n`;
+  let text = `${t('weeklyReport.reportHeader')}\n`;
+  text += `${t('weeklyReport.patient')}: ${userName}\n`;
+  text += `${t('weeklyReport.week')}: ${formatDateLabel(start, locale)} - ${formatDateLabel(end, locale)}\n\n`;
 
   if (entries.length === 0) {
-    text += 'No trouble flags or notes logged this week.\n';
+    text += `${t('weeklyReport.noEntries')}\n`;
     return text;
   }
 
   entries.forEach((entry) => {
     const entryDate = new Date(entry.timestamp);
-    const weekday = entryDate.toLocaleDateString(undefined, { weekday: 'long' });
-    const time = entryDate.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    const weekday = entryDate.toLocaleDateString(locale, { weekday: 'long' });
+    const time = entryDate.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' });
     text += `[${weekday} ${time}] ${entry.exerciseName}\n`;
     if (entry.type === 'struggle') {
-      text += `  Reported trouble${entry.note ? `: "${entry.note}"` : ''}\n`;
+      text += `  ${t('weeklyReport.reportedTrouble')}${entry.note ? `: "${entry.note}"` : ''}\n`;
     } else {
-      text += `  Note: "${entry.note}"\n`;
+      text += `  ${t('weeklyReport.note')}: "${entry.note}"\n`;
     }
     text += '\n';
   });

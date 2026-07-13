@@ -2,29 +2,29 @@ import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { getCurrentWeekRange, buildWeeklyReportText, formatDateLabel } from '../utils/report';
 import ExportButton from './ExportButton';
 import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function WeeklyReportScreen({ visible, onClose, userName, struggleLogs, postSetNotes }) {
+  const { t, locale } = useLanguage();
   if (!visible) {
     return null;
   }
 
   const { start, end } = getCurrentWeekRange();
-  const reportText = buildWeeklyReportText({ userName, struggleLogs, postSetNotes });
+  const reportText = buildWeeklyReportText({ userName, struggleLogs, postSetNotes, t, locale });
 
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity style={styles.backButton} onPress={onClose}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>{t('weeklyReport.back')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>Weekly Report</Text>
+        <Text style={styles.title}>{t('weeklyReport.title')}</Text>
         <Text style={styles.subtitle}>
-          {formatDateLabel(start)} – {formatDateLabel(end)}
+          {formatDateLabel(start, locale)} – {formatDateLabel(end, locale)}
         </Text>
-        <Text style={styles.helperText}>
-          Share this with your physical therapist — it only covers this week so far.
-        </Text>
+        <Text style={styles.helperText}>{t('weeklyReport.helperText')}</Text>
 
         <View style={styles.previewBox}>
           <Text style={styles.previewText}>{reportText}</Text>

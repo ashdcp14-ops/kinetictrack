@@ -1,9 +1,11 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { DAYS_OF_WEEK, DAY_ABBREVIATIONS, getTodayName } from '../data/schedule';
+import { DAYS_OF_WEEK, getTodayName } from '../data/schedule';
 import { getDayCompletion, getProgressColor } from '../utils/progress';
 import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule, completedByDay }) {
+  const { t, translateDayAbbr } = useLanguage();
   const todayName = getTodayName();
 
   return (
@@ -26,7 +28,7 @@ export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule,
             onPress={() => onSelectDay(day)}
           >
             <Text style={[styles.pillDay, isSelected && styles.pillDaySelected]}>
-              {DAY_ABBREVIATIONS[day]}
+              {translateDayAbbr(day)}
             </Text>
             {daySchedule ? (
               <View style={[styles.progressTrack, isSelected && styles.progressTrackSelected]}>
@@ -38,9 +40,15 @@ export default function WeekDayStrip({ selectedDay, onSelectDay, weeklySchedule,
                 />
               </View>
             ) : (
-              <Text style={[styles.restLabel, isSelected && styles.restLabelSelected]}>rest</Text>
+              <Text style={[styles.restLabel, isSelected && styles.restLabelSelected]}>
+                {t('weekDayStrip.rest')}
+              </Text>
             )}
-            {isToday && <Text style={[styles.todayLabel, isSelected && styles.todayLabelSelected]}>today</Text>}
+            {isToday && (
+              <Text style={[styles.todayLabel, isSelected && styles.todayLabelSelected]}>
+                {t('weekDayStrip.today')}
+              </Text>
+            )}
           </TouchableOpacity>
         );
       })}
