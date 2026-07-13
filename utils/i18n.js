@@ -8,6 +8,7 @@ import {
   MONTH_NAMES_ES,
 } from './translations';
 import { EXERCISE_TRANSLATIONS_ES } from '../data/exercises.es';
+import { DAY_ABBREVIATIONS } from '../data/schedule';
 
 const MONTH_NAMES_EN = [
   'January',
@@ -51,7 +52,7 @@ export function LanguageProvider({ language, setLanguage, children }) {
     }
 
     function translateDayAbbr(day) {
-      return language === 'es' ? DAY_ABBR_ES[day] ?? day : day;
+      return language === 'es' ? DAY_ABBR_ES[day] ?? day : DAY_ABBREVIATIONS[day] ?? day;
     }
 
     function translateExercise(exercise) {
