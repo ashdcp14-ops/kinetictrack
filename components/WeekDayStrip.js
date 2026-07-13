@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     paddingRight: SPACING.sm,
   },
   pill: {
-    width: 56,
+    width: 62,
     paddingVertical: SPACING.md,
     borderRadius: RADIUS.md,
     borderWidth: 1,

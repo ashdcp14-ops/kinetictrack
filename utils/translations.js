@@ -321,7 +321,7 @@ export const translations = {
       profile: 'Perfil',
     },
     weekDayStrip: {
-      rest: 'descanso',
+      rest: 'libre',
       today: 'hoy',
     },
   },
