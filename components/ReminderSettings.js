@@ -2,15 +2,27 @@ import { useState } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { requestNotificationPermissions, scheduleDailyReminder } from '../utils/notifications';
 import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 const TIME_OPTIONS = [
-  { label: '7:00 AM', hour: 7, minute: 0 },
-  { label: '9:00 AM', hour: 9, minute: 0 },
-  { label: '1:00 PM', hour: 13, minute: 0 },
-  { label: '6:00 PM', hour: 18, minute: 0 },
+  { hour: 7, minute: 0 },
+  { hour: 9, minute: 0 },
+  { hour: 13, minute: 0 },
+  { hour: 18, minute: 0 },
 ];
 
+function formatTimeLabel(hour, minute, language) {
+  const minuteLabel = minute.toString().padStart(2, '0');
+  if (language === 'es') {
+    return `${hour.toString().padStart(2, '0')}:${minuteLabel}`;
+  }
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+  return `${hour12}:${minuteLabel} ${period}`;
+}
+
 export default function ReminderSettings({ visible, onClose }) {
+  const { t, language } = useLanguage();
   const [confirmedTime, setConfirmedTime] = useState(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
 
@@ -18,53 +30,57 @@ export default function ReminderSettings({ visible, onClose }) {
     return null;
   }
 
-  async function handleSelectTime(option) {
+  async function handleSelectTime(option, label) {
     const granted = await requestNotificationPermissions();
     if (!granted) {
       setPermissionDenied(true);
       return;
     }
     setPermissionDenied(false);
-    await scheduleDailyReminder(option.hour, option.minute);
-    setConfirmedTime(option.label);
+    await scheduleDailyReminder(
+      option.hour,
+      option.minute,
+      t('reminderSettings.notificationTitle'),
+      t('reminderSettings.notificationBody')
+    );
+    setConfirmedTime(label);
   }
 
   return (
     <Modal visible animationType="slide" onRequestClose={onClose}>
       <View style={styles.container}>
-        <Text style={styles.title}>Daily reminder</Text>
-        <Text style={styles.subtitle}>
-          Pick a time and we'll send a gentle nudge to start your routine.
-        </Text>
+        <Text style={styles.title}>{t('reminderSettings.title')}</Text>
+        <Text style={styles.subtitle}>{t('reminderSettings.subtitle')}</Text>
 
-        {TIME_OPTIONS.map((option) => (
-          <TouchableOpacity
-            key={option.label}
-            style={[styles.option, confirmedTime === option.label && styles.optionSelected]}
-            onPress={() => handleSelectTime(option)}
-          >
-            <Text
-              style={[
-                styles.optionText,
-                confirmedTime === option.label && styles.optionTextSelected,
-              ]}
+        {TIME_OPTIONS.map((option) => {
+          const label = formatTimeLabel(option.hour, option.minute, language);
+          return (
+            <TouchableOpacity
+              key={label}
+              style={[styles.option, confirmedTime === label && styles.optionSelected]}
+              onPress={() => handleSelectTime(option, label)}
             >
-              {option.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.optionText,
+                  confirmedTime === label && styles.optionTextSelected,
+                ]}
+              >
+                {label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
 
         {confirmedTime && (
-          <Text style={styles.confirmation}>Reminder set for {confirmedTime} ✓</Text>
+          <Text style={styles.confirmation}>{t('reminderSettings.confirmed', confirmedTime)}</Text>
         )}
         {permissionDenied && (
-          <Text style={styles.error}>
-            Notifications are turned off. Enable them in your device settings to get reminders.
-          </Text>
+          <Text style={styles.error}>{t('reminderSettings.permissionDenied')}</Text>
         )}
 
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeButtonText}>Done</Text>
+          <Text style={styles.closeButtonText}>{t('reminderSettings.done')}</Text>
         </TouchableOpacity>
       </View>
     </Modal>

@@ -27,13 +27,15 @@ export default class ErrorBoundary extends Component {
       return (
         <View style={styles.container}>
           <Text style={styles.emoji}>😕</Text>
-          <Text style={styles.title}>Something went wrong</Text>
+          <Text style={styles.title}>Something went wrong{'\n'}Algo salió mal</Text>
           <Text style={styles.subtitle}>
             KineticTrack ran into an error and couldn't continue. Resetting will clear your saved
-            routine and progress on this device.
+            routine and progress on this device.{'\n\n'}
+            KineticTrack encontró un error y no pudo continuar. Restablecer borrará tu rutina y
+            progreso guardados en este dispositivo.
           </Text>
           <TouchableOpacity style={styles.button} onPress={() => this.handleReset()}>
-            <Text style={styles.buttonText}>Reset app data</Text>
+            <Text style={styles.buttonText}>Reset app data / Restablecer datos</Text>
           </TouchableOpacity>
         </View>
       );

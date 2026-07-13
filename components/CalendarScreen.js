@@ -5,6 +5,7 @@ import MonthCalendar from './MonthCalendar';
 import DayScheduleEditor from './DayScheduleEditor';
 import BottomNavBar from './BottomNavBar';
 import { COLORS, RADIUS, SPACING, FONT_SIZES, getCategoryAccent } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 function getDayExercises(daySchedule) {
   if (!daySchedule) {
@@ -26,6 +27,7 @@ export default function CalendarScreen({
   activeTab,
   onNavigate,
 }) {
+  const { t, translateDay, translateCategory, translateExercise } = useLanguage();
   const [selectedDay, setSelectedDay] = useState(null);
   const [step, setStep] = useState('calendar');
   const [draftSchedule, setDraftSchedule] = useState(null);
@@ -76,20 +78,22 @@ export default function CalendarScreen({
           style={styles.backButton}
           onPress={step === 'calendar' ? onClose : handleBackToCalendar}
         >
-          <Text style={styles.backButtonText}>← {step === 'calendar' ? 'Back' : 'Calendar'}</Text>
+          <Text style={styles.backButtonText}>
+            {step === 'calendar' ? t('calendar.back') : t('calendar.backToCalendar')}
+          </Text>
         </TouchableOpacity>
 
         {step === 'calendar' && (
           <>
-            <Text style={styles.title}>Calendar</Text>
-            <Text style={styles.subtitle}>Tap a date to view or edit that day's workout.</Text>
+            <Text style={styles.title}>{t('calendar.title')}</Text>
+            <Text style={styles.subtitle}>{t('calendar.subtitle')}</Text>
             <MonthCalendar weeklySchedule={weeklySchedule} onSelectDay={handleSelectDay} />
           </>
         )}
 
         {step === 'detail' && (
           <>
-            <Text style={styles.title}>{selectedDay}</Text>
+            <Text style={styles.title}>{translateDay(selectedDay)}</Text>
 
             {daySchedule ? (
               <>
@@ -100,32 +104,37 @@ export default function CalendarScreen({
                     resizeMode="contain"
                   />
                   <Text style={[styles.categoryText, { color: categoryAccent.text }]}>
-                    {daySchedule.category}
+                    {translateCategory(daySchedule.category)}
                   </Text>
                 </View>
 
-                {getDayExercises(daySchedule).map((exercise) => (
-                  <View key={exercise.id} style={styles.exerciseRow}>
-                    <Text style={styles.exerciseName}>{exercise.name}</Text>
-                    <Text style={styles.exerciseMeta}>
-                      {exercise.sets} sets × {exercise.reps} reps
-                    </Text>
-                  </View>
-                ))}
+                {getDayExercises(daySchedule).map((exercise) => {
+                  const localizedExercise = translateExercise(exercise);
+                  return (
+                    <View key={exercise.id} style={styles.exerciseRow}>
+                      <Text style={styles.exerciseName}>{localizedExercise.name}</Text>
+                      <Text style={styles.exerciseMeta}>
+                        {t('calendar.exerciseMeta', exercise.sets, exercise.reps)}
+                      </Text>
+                    </View>
+                  );
+                })}
               </>
             ) : (
-              <Text style={styles.restText}>No workout scheduled — rest day 🌿</Text>
+              <Text style={styles.restText}>{t('calendar.restText')}</Text>
             )}
 
             <TouchableOpacity style={styles.editButton} onPress={handleStartEdit}>
-              <Text style={styles.editButtonText}>{daySchedule ? 'Edit this day' : 'Add a workout'}</Text>
+              <Text style={styles.editButtonText}>
+                {daySchedule ? t('calendar.editThisDay') : t('calendar.addWorkout')}
+              </Text>
             </TouchableOpacity>
           </>
         )}
 
         {step === 'edit' && (
           <>
-            <Text style={styles.title}>Edit {selectedDay}</Text>
+            <Text style={styles.title}>{t('calendar.editDayTitle', translateDay(selectedDay))}</Text>
 
             <DayScheduleEditor daySchedule={draftSchedule} onChange={setDraftSchedule} />
 
@@ -134,12 +143,12 @@ export default function CalendarScreen({
               disabled={!canSaveDraft}
               onPress={handleSave}
             >
-              <Text style={styles.saveButtonText}>Save changes</Text>
+              <Text style={styles.saveButtonText}>{t('calendar.saveChanges')}</Text>
             </TouchableOpacity>
 
             {daySchedule && (
               <TouchableOpacity style={styles.removeButton} onPress={handleRemove}>
-                <Text style={styles.removeButtonText}>Remove this day's workout</Text>
+                <Text style={styles.removeButtonText}>{t('calendar.removeDay')}</Text>
               </TouchableOpacity>
             )}
           </>

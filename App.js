@@ -5,7 +5,9 @@ import WelcomeScreen from './components/WelcomeScreen';
 import RoutineScheduleScreen from './components/RoutineScheduleScreen';
 import ExerciseWorkspace from './components/ExerciseWorkspace';
 import ErrorBoundary from './components/ErrorBoundary';
+import LanguageSelectScreen from './components/LanguageSelectScreen';
 import { loadJSON, saveJSON, removeItem, STORAGE_KEYS } from './utils/storage';
+import { LanguageProvider } from './utils/i18n';
 
 function migrateWeeklySchedule(schedule) {
   if (!schedule) {
@@ -30,6 +32,7 @@ function migrateWeeklySchedule(schedule) {
 
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
+  const [language, setLanguageState] = useState(null);
   const [userName, setUserName] = useState(null);
   const [weeklySchedule, setWeeklySchedule] = useState(null);
   const [struggleLogs, setStruggleLogs] = useState([]);
@@ -37,7 +40,8 @@ function AppContent() {
 
   useEffect(() => {
     async function loadPersistedState() {
-      const [savedName, savedSchedule, savedStruggleLogs, savedPostSetNotes] = await Promise.all([
+      const [savedLanguage, savedName, savedSchedule, savedStruggleLogs, savedPostSetNotes] = await Promise.all([
+        loadJSON(STORAGE_KEYS.LANGUAGE, null),
         loadJSON(STORAGE_KEYS.USER_NAME, null),
         loadJSON(STORAGE_KEYS.WEEKLY_SCHEDULE, null),
         loadJSON(STORAGE_KEYS.STRUGGLE_LOGS, []),
@@ -47,6 +51,7 @@ function AppContent() {
       if (didMigrate) {
         saveJSON(STORAGE_KEYS.WEEKLY_SCHEDULE, migratedSchedule);
       }
+      setLanguageState(savedLanguage);
       setUserName(savedName);
       setWeeklySchedule(migratedSchedule);
       setStruggleLogs(savedStruggleLogs);
@@ -55,6 +60,11 @@ function AppContent() {
     }
     loadPersistedState();
   }, []);
+
+  function selectLanguage(newLanguage) {
+    setLanguageState(newLanguage);
+    saveJSON(STORAGE_KEYS.LANGUAGE, newLanguage);
+  }
 
   useEffect(() => {
     if (!isLoading) {
@@ -70,6 +80,10 @@ function AppContent() {
 
   if (isLoading) {
     return <View style={styles.container} />;
+  }
+
+  if (!language) {
+    return <LanguageSelectScreen onSelect={selectLanguage} />;
   }
 
   function selectUserName(name) {
@@ -113,11 +127,19 @@ function AppContent() {
   }
 
   if (!userName) {
-    return <WelcomeScreen onContinue={selectUserName} />;
+    return (
+      <LanguageProvider language={language} setLanguage={selectLanguage}>
+        <WelcomeScreen onContinue={selectUserName} />
+      </LanguageProvider>
+    );
   }
 
   if (!weeklySchedule) {
-    return <RoutineScheduleScreen onContinue={selectWeeklySchedule} />;
+    return (
+      <LanguageProvider language={language} setLanguage={selectLanguage}>
+        <RoutineScheduleScreen onContinue={selectWeeklySchedule} />
+      </LanguageProvider>
+    );
   }
 
   function logStruggle(exercise, note) {
@@ -141,7 +163,7 @@ function AppContent() {
   }
 
   return (
-    <>
+    <LanguageProvider language={language} setLanguage={selectLanguage}>
       <ExerciseWorkspace
         userName={userName}
         weeklySchedule={weeklySchedule}
@@ -154,7 +176,7 @@ function AppContent() {
         onSwitchUser={switchUser}
       />
       <StatusBar style="auto" />
-    </>
+    </LanguageProvider>
   );
 }
 

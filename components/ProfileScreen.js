@@ -5,6 +5,7 @@ import { getDayCompletion, getWeekCompletion, getProgressColor } from '../utils/
 import WeeklyReportScreen from './WeeklyReportScreen';
 import BottomNavBar from './BottomNavBar';
 import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW, CATEGORY_PALETTE } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 function ProgressCard({ label, stats, accent }) {
   return (
@@ -42,6 +43,7 @@ export default function ProfileScreen({
   activeTab,
   onNavigate,
 }) {
+  const { t } = useLanguage();
   const [weeklyReportVisible, setWeeklyReportVisible] = useState(false);
   const [confirmingSwitch, setConfirmingSwitch] = useState(false);
 
@@ -59,49 +61,46 @@ export default function ProfileScreen({
     <View style={styles.screen}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity style={styles.backButton} onPress={onClose}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>{t('profile.back')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.greeting}>Hi, {userName} 👋</Text>
+        <Text style={styles.greeting}>{t('profile.greeting', userName)}</Text>
 
-        <ProgressCard label="Today's progress" stats={todayStats} accent={CATEGORY_PALETTE[0]} />
-        <ProgressCard label="This week's progress" stats={weekStats} accent={CATEGORY_PALETTE[2]} />
+        <ProgressCard label={t('profile.todaysProgress')} stats={todayStats} accent={CATEGORY_PALETTE[0]} />
+        <ProgressCard label={t('profile.weekProgress')} stats={weekStats} accent={CATEGORY_PALETTE[2]} />
 
         <TouchableOpacity style={styles.calendarButton} onPress={onViewCalendar}>
-          <Text style={styles.calendarButtonText}>📅 View calendar</Text>
+          <Text style={styles.calendarButtonText}>{t('profile.viewCalendar')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.clinicButton} onPress={onViewClinicDashboard}>
-          <Text style={styles.clinicButtonText}>📋 View my comments &amp; flags</Text>
+          <Text style={styles.clinicButtonText}>{t('profile.viewComments')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.reportButton} onPress={() => setWeeklyReportVisible(true)}>
-          <Text style={styles.reportButtonText}>📄 Weekly report for my PT</Text>
+          <Text style={styles.reportButtonText}>{t('profile.weeklyReport')}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.reportButton} onPress={onViewReminders}>
-          <Text style={styles.reportButtonText}>🔔 Reminder settings</Text>
+          <Text style={styles.reportButtonText}>{t('profile.reminderSettings')}</Text>
         </TouchableOpacity>
 
         {confirmingSwitch ? (
           <View style={styles.switchConfirmBox}>
-            <Text style={styles.switchConfirmText}>
-              Switching users will erase {userName}'s routine, progress, and history on this
-              device. This can't be undone.
-            </Text>
+            <Text style={styles.switchConfirmText}>{t('profile.switchConfirm', userName)}</Text>
             <TouchableOpacity style={styles.switchConfirmButton} onPress={onSwitchUser}>
-              <Text style={styles.switchConfirmButtonText}>Yes, switch user</Text>
+              <Text style={styles.switchConfirmButtonText}>{t('profile.yesSwitch')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.switchCancelButton}
               onPress={() => setConfirmingSwitch(false)}
             >
-              <Text style={styles.switchCancelButtonText}>Cancel</Text>
+              <Text style={styles.switchCancelButtonText}>{t('profile.cancel')}</Text>
             </TouchableOpacity>
           </View>
         ) : (
           <TouchableOpacity style={styles.switchUserButton} onPress={() => setConfirmingSwitch(true)}>
-            <Text style={styles.switchUserButtonText}>🔄 Switch user</Text>
+            <Text style={styles.switchUserButtonText}>{t('profile.switchUser')}</Text>
           </TouchableOpacity>
         )}
       </ScrollView>

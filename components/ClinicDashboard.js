@@ -1,6 +1,7 @@
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import BottomNavBar from './BottomNavBar';
 import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 function buildTimeline(struggleLogs, postSetNotes) {
   const struggleEntries = struggleLogs.map((log) => ({
@@ -20,11 +21,11 @@ function buildTimeline(struggleLogs, postSetNotes) {
   return [...struggleEntries, ...noteEntries].sort((a, b) => b.timestamp - a.timestamp);
 }
 
-function formatTimestamp(timestamp) {
+function formatTimestamp(timestamp, locale) {
   const date = new Date(timestamp);
-  const weekday = date.toLocaleDateString(undefined, { weekday: 'long' });
-  const dateLabel = date.toLocaleDateString();
-  const timeLabel = date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  const weekday = date.toLocaleDateString(locale, { weekday: 'long' });
+  const dateLabel = date.toLocaleDateString(locale);
+  const timeLabel = date.toLocaleTimeString(locale, { hour: 'numeric', minute: '2-digit' });
   return `${weekday}, ${dateLabel} · ${timeLabel}`;
 }
 
@@ -36,6 +37,7 @@ export default function ClinicDashboard({
   activeTab,
   onNavigate,
 }) {
+  const { t, locale } = useLanguage();
   if (!visible) {
     return null;
   }
@@ -47,16 +49,14 @@ export default function ClinicDashboard({
     <View style={styles.screen}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity style={styles.backButton} onPress={onClose}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>{t('clinicDashboard.back')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>Clinic Timeline</Text>
-        <Text style={styles.subtitle}>
-          Only exercises flagged as difficult or with a pain note appear here.
-        </Text>
+        <Text style={styles.title}>{t('clinicDashboard.title')}</Text>
+        <Text style={styles.subtitle}>{t('clinicDashboard.subtitle')}</Text>
 
         {timeline.length === 0 && (
-          <Text style={styles.emptyState}>No flagged exercises yet.</Text>
+          <Text style={styles.emptyState}>{t('clinicDashboard.empty')}</Text>
         )}
 
         {timeline.map((entry) => (
@@ -65,11 +65,11 @@ export default function ClinicDashboard({
             style={[styles.entry, entry.type === 'struggle' ? styles.entryStruggle : styles.entryNote]}
           >
             <Text style={styles.entryHeader}>
-              {entry.type === 'struggle' ? '⚠ Trouble reported' : '📝 Pain note'}
+              {entry.type === 'struggle' ? t('clinicDashboard.troubleReported') : t('clinicDashboard.painNote')}
             </Text>
             <Text style={styles.entryExercise}>{entry.exerciseName}</Text>
             {entry.note && <Text style={styles.entryNoteText}>"{entry.note}"</Text>}
-            <Text style={styles.entryTimestamp}>{formatTimestamp(entry.timestamp)}</Text>
+            <Text style={styles.entryTimestamp}>{formatTimestamp(entry.timestamp, locale)}</Text>
           </View>
         ))}
       </ScrollView>

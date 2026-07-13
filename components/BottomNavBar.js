@@ -1,14 +1,16 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 const TABS = [
-  { key: 'home', icon: '🏠', label: 'Home' },
-  { key: 'calendar', icon: '📅', label: 'Calendar' },
-  { key: 'clinic', icon: '📋', label: 'Clinic' },
-  { key: 'profile', icon: '👤', label: 'Profile' },
+  { key: 'home', icon: '🏠', labelKey: 'bottomNav.home' },
+  { key: 'calendar', icon: '📅', labelKey: 'bottomNav.calendar' },
+  { key: 'clinic', icon: '📋', labelKey: 'bottomNav.clinic' },
+  { key: 'profile', icon: '👤', labelKey: 'bottomNav.profile' },
 ];
 
 export default function BottomNavBar({ activeTab, onNavigate }) {
+  const { t } = useLanguage();
   return (
     <View style={styles.bar}>
       {TABS.map((tab) => {
@@ -22,7 +24,7 @@ export default function BottomNavBar({ activeTab, onNavigate }) {
             <View style={[styles.iconCircle, isActive && styles.iconCircleActive]}>
               <Text style={styles.icon}>{tab.icon}</Text>
             </View>
-            <Text style={[styles.label, isActive && styles.labelActive]}>{tab.label}</Text>
+            <Text style={[styles.label, isActive && styles.labelActive]}>{t(tab.labelKey)}</Text>
           </TouchableOpacity>
         );
       })}

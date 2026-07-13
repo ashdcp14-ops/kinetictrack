@@ -1,7 +1,9 @@
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function DayCompleteModal({ visible, onClose, dayName, struggleEntries, noteEntries }) {
+  const { t, translateDay } = useLanguage();
   if (!visible) {
     return null;
   }
@@ -13,16 +15,16 @@ export default function DayCompleteModal({ visible, onClose, dayName, struggleEn
       <View style={styles.overlay}>
         <ScrollView style={styles.card} contentContainerStyle={styles.cardContent}>
           <Text style={styles.emoji}>🎉</Text>
-          <Text style={styles.title}>Great job!</Text>
-          <Text style={styles.subtitle}>You completed {dayName}'s routine.</Text>
+          <Text style={styles.title}>{t('dayComplete.greatJob')}</Text>
+          <Text style={styles.subtitle}>{t('dayComplete.completedRoutine', translateDay(dayName))}</Text>
 
           {hasNothingToReport ? (
-            <Text style={styles.emptyState}>No trouble flags or notes today — smooth session!</Text>
+            <Text style={styles.emptyState}>{t('dayComplete.noFlags')}</Text>
           ) : (
             <>
               {struggleEntries.length > 0 && (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>⚠ Trouble reported</Text>
+                  <Text style={styles.sectionTitle}>{t('dayComplete.troubleReported')}</Text>
                   {struggleEntries.map((entry) => (
                     <Text key={entry.id} style={styles.entryText}>
                       • {entry.exerciseName}
@@ -34,7 +36,7 @@ export default function DayCompleteModal({ visible, onClose, dayName, struggleEn
 
               {noteEntries.length > 0 && (
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>📝 Notes</Text>
+                  <Text style={styles.sectionTitle}>{t('dayComplete.notes')}</Text>
                   {noteEntries.map((entry) => (
                     <Text key={entry.id} style={styles.entryText}>
                       • {entry.exerciseName}: "{entry.note}"
@@ -46,7 +48,7 @@ export default function DayCompleteModal({ visible, onClose, dayName, struggleEn
           )}
 
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Text style={styles.closeButtonText}>Done</Text>
+            <Text style={styles.closeButtonText}>{t('dayComplete.done')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

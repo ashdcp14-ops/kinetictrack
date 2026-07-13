@@ -11,8 +11,10 @@ import {
 } from 'react-native';
 import VideoPlayer from './VideoPlayer';
 import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle }) {
+  const { t, translateExercise } = useLanguage();
   const [justLogged, setJustLogged] = useState(false);
   const [showTroublePrompt, setShowTroublePrompt] = useState(false);
   const [troubleNote, setTroubleNote] = useState('');
@@ -21,8 +23,10 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
     return null;
   }
 
+  const localizedExercise = translateExercise(exercise);
+
   function finishLoggingTrouble(note) {
-    onLogStruggle(exercise, note);
+    onLogStruggle(localizedExercise, note);
     setTroubleNote('');
     setShowTroublePrompt(false);
     setJustLogged(true);
@@ -33,28 +37,28 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
     <Modal visible animationType="slide" onRequestClose={onClose}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity style={styles.backButton} onPress={onClose}>
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={styles.backButtonText}>{t('exerciseGuide.back')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>{exercise.name}</Text>
+        <Text style={styles.title}>{localizedExercise.name}</Text>
         <Text style={styles.target}>
-          Target: {exercise.sets} sets × {exercise.reps} reps
+          {t('exerciseGuide.target', exercise.sets, exercise.reps)}
         </Text>
 
         <VideoPlayer videoUrl={exercise.videoUrl} />
 
         <TouchableOpacity onPress={() => Linking.openURL(exercise.videoUrl)}>
-          <Text style={styles.openInYoutube}>Open in YouTube ↗</Text>
+          <Text style={styles.openInYoutube}>{t('exerciseGuide.openInYoutube')}</Text>
         </TouchableOpacity>
 
         <View style={styles.instructionBlock}>
-          <Text style={styles.instructionLabel}>Setup</Text>
-          <Text style={styles.instructionText}>{exercise.setup}</Text>
+          <Text style={styles.instructionLabel}>{t('exerciseGuide.setup')}</Text>
+          <Text style={styles.instructionText}>{localizedExercise.setup}</Text>
         </View>
 
         <View style={styles.instructionBlock}>
-          <Text style={styles.instructionLabel}>Execution</Text>
-          {exercise.steps.map((step, index) => (
+          <Text style={styles.instructionLabel}>{t('exerciseGuide.execution')}</Text>
+          {localizedExercise.steps.map((step, index) => (
             <View key={index} style={styles.stepRow}>
               <Text style={styles.stepNumber}>{index + 1}.</Text>
               <Text style={styles.stepText}>{step}</Text>
@@ -64,10 +68,10 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
 
         {showTroublePrompt ? (
           <>
-            <Text style={styles.troublePromptLabel}>What's going on? (optional)</Text>
+            <Text style={styles.troublePromptLabel}>{t('exerciseGuide.whatsGoingOn')}</Text>
             <TextInput
               style={styles.troubleInput}
-              placeholder="E.g. sharp pinch on the 5th rep"
+              placeholder={t('exerciseGuide.troublePlaceholder')}
               value={troubleNote}
               onChangeText={setTroubleNote}
               autoFocus
@@ -77,19 +81,19 @@ export default function ExerciseGuideModal({ exercise, onClose, onLogStruggle })
               style={styles.troubleSubmitButton}
               onPress={() => finishLoggingTrouble(troubleNote.trim())}
             >
-              <Text style={styles.troubleSubmitButtonText}>Submit</Text>
+              <Text style={styles.troubleSubmitButtonText}>{t('exerciseGuide.submit')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.troubleSkipButton} onPress={() => finishLoggingTrouble('')}>
-              <Text style={styles.troubleSkipButtonText}>Skip</Text>
+              <Text style={styles.troubleSkipButtonText}>{t('exerciseGuide.skip')}</Text>
             </TouchableOpacity>
           </>
         ) : (
           <TouchableOpacity style={styles.struggleButton} onPress={() => setShowTroublePrompt(true)}>
-            <Text style={styles.struggleButtonText}>I'm Having Trouble with This</Text>
+            <Text style={styles.struggleButtonText}>{t('exerciseGuide.havingTrouble')}</Text>
           </TouchableOpacity>
         )}
 
-        {justLogged && <Text style={styles.confirmation}>Logged ✓</Text>}
+        {justLogged && <Text style={styles.confirmation}>{t('exerciseGuide.logged')}</Text>}
       </ScrollView>
     </Modal>
   );

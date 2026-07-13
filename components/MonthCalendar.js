@@ -1,23 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PROBLEM_AREA_ICONS } from '../data/exercises';
 import { COLORS, SPACING, FONT_SIZES } from '../utils/theme';
-
-const MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-const WEEKDAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+import { useLanguage } from '../utils/i18n';
 
 const WEEKDAY_NAMES = [
   'Sunday',
@@ -30,6 +14,7 @@ const WEEKDAY_NAMES = [
 ];
 
 export default function MonthCalendar({ weeklySchedule, onSelectDay }) {
+  const { monthNames, weekdayLetters } = useLanguage();
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth();
@@ -49,11 +34,11 @@ export default function MonthCalendar({ weeklySchedule, onSelectDay }) {
   return (
     <View style={styles.container}>
       <Text style={styles.monthLabel}>
-        {MONTH_NAMES[month]} {year}
+        {monthNames[month]} {year}
       </Text>
 
       <View style={styles.weekdayRow}>
-        {WEEKDAY_LABELS.map((label, index) => (
+        {weekdayLetters.map((label, index) => (
           <Text key={index} style={styles.weekdayLabel}>
             {label}
           </Text>

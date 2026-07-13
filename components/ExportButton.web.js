@@ -1,11 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { COLORS, RADIUS, SPACING, FONT_SIZES } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function ExportButton({ reportText }) {
+  const { t } = useLanguage();
+
   async function handleExport() {
     if (navigator.share) {
       try {
-        await navigator.share({ text: reportText, title: 'KineticTrack Weekly Report' });
+        await navigator.share({ text: reportText, title: t('weeklyReport.shareTitle') });
         return;
       } catch {
         // User cancelled the share sheet — fall through to download instead.
@@ -25,7 +28,7 @@ export default function ExportButton({ reportText }) {
 
   return (
     <TouchableOpacity style={styles.button} onPress={handleExport}>
-      <Text style={styles.buttonText}>📤 Download / Share Report</Text>
+      <Text style={styles.buttonText}>{t('weeklyReport.downloadButton')}</Text>
     </TouchableOpacity>
   );
 }

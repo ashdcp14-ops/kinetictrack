@@ -1,13 +1,17 @@
 import { useState } from 'react';
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function PostSetFeedbackModal({ exercise, onSubmit, onSkip }) {
+  const { t, translateExercise } = useLanguage();
   const [note, setNote] = useState('');
 
   if (!exercise) {
     return null;
   }
+
+  const localizedExercise = translateExercise(exercise);
 
   function handleSubmit() {
     const trimmed = note.trim();
@@ -28,12 +32,12 @@ export default function PostSetFeedbackModal({ exercise, onSubmit, onSkip }) {
     <Modal visible transparent animationType="fade" onRequestClose={handleSkip}>
       <View style={styles.overlay}>
         <View style={styles.card}>
-          <Text style={styles.title}>How did that feel?</Text>
-          <Text style={styles.subtitle}>{exercise.name}</Text>
+          <Text style={styles.title}>{t('postSetFeedback.title')}</Text>
+          <Text style={styles.subtitle}>{localizedExercise.name}</Text>
 
           <TextInput
             style={styles.input}
-            placeholder="E.g. felt a sharp pinch on the 5th rep"
+            placeholder={t('postSetFeedback.placeholder')}
             value={note}
             onChangeText={setNote}
             autoFocus
@@ -41,11 +45,11 @@ export default function PostSetFeedbackModal({ exercise, onSubmit, onSkip }) {
           />
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Submit</Text>
+            <Text style={styles.submitButtonText}>{t('postSetFeedback.submit')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-            <Text style={styles.skipButtonText}>Skip</Text>
+            <Text style={styles.skipButtonText}>{t('postSetFeedback.skip')}</Text>
           </TouchableOpacity>
         </View>
       </View>

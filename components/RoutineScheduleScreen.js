@@ -3,8 +3,10 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-nati
 import { DAYS_OF_WEEK } from '../data/schedule';
 import DayScheduleEditor from './DayScheduleEditor';
 import { COLORS, RADIUS, SPACING, FONT_SIZES, SHADOW } from '../utils/theme';
+import { useLanguage } from '../utils/i18n';
 
 export default function RoutineScheduleScreen({ onContinue }) {
+  const { t, translateDay } = useLanguage();
   const [step, setStep] = useState('days');
   const [selectedDays, setSelectedDays] = useState([]);
   const [schedule, setSchedule] = useState({});
@@ -31,8 +33,8 @@ export default function RoutineScheduleScreen({ onContinue }) {
   if (step === 'days') {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Which days will you train?</Text>
-        <Text style={styles.subtitle}>Pick the days you plan to do your exercises.</Text>
+        <Text style={styles.title}>{t('routineSchedule.whichDaysTitle')}</Text>
+        <Text style={styles.subtitle}>{t('routineSchedule.whichDaysSubtitle')}</Text>
 
         {DAYS_OF_WEEK.map((day) => {
           const isSelected = selectedDays.includes(day);
@@ -43,7 +45,7 @@ export default function RoutineScheduleScreen({ onContinue }) {
               onPress={() => toggleDay(day)}
             >
               <Text style={[styles.optionText, isSelected && styles.optionTextSelected]}>
-                {isSelected ? '☑' : '☐'} {day}
+                {isSelected ? '☑' : '☐'} {translateDay(day)}
               </Text>
             </TouchableOpacity>
           );
@@ -54,7 +56,7 @@ export default function RoutineScheduleScreen({ onContinue }) {
           disabled={selectedDays.length === 0}
           onPress={() => setStep('categories')}
         >
-          <Text style={styles.continueButtonText}>Next</Text>
+          <Text style={styles.continueButtonText}>{t('routineSchedule.next')}</Text>
         </TouchableOpacity>
       </ScrollView>
     );
@@ -62,14 +64,12 @@ export default function RoutineScheduleScreen({ onContinue }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Build each day's workout</Text>
-      <Text style={styles.subtitle}>
-        Pick a category, check off the exercises you'll do, and set how many sets and reps for each.
-      </Text>
+      <Text style={styles.title}>{t('routineSchedule.buildTitle')}</Text>
+      <Text style={styles.subtitle}>{t('routineSchedule.buildSubtitle')}</Text>
 
       {orderedSelectedDays.map((day) => (
         <View key={day} style={styles.daySection}>
-          <Text style={styles.dayTitle}>{day}</Text>
+          <Text style={styles.dayTitle}>{translateDay(day)}</Text>
           <DayScheduleEditor
             daySchedule={schedule[day] ?? null}
             onChange={(updated) => setSchedule((current) => ({ ...current, [day]: updated }))}
@@ -82,7 +82,7 @@ export default function RoutineScheduleScreen({ onContinue }) {
         disabled={!allDaysReady}
         onPress={handleFinish}
       >
-        <Text style={styles.continueButtonText}>Save Routine</Text>
+        <Text style={styles.continueButtonText}>{t('routineSchedule.saveRoutine')}</Text>
       </TouchableOpacity>
     </ScrollView>
   );
